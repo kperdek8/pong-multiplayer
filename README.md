@@ -10,8 +10,9 @@ In this project I am planning to create simple Pong game and implement as many l
 ## Roadmap
 ### 1. Setup
 1.1 **Set Up Project**
-- [x] Define project roadmap
-- [x] Add necessary libraries and tools to CMake file (Qt, OpenGL, etc.).
+- [x] Define project's roadmap.
+- [x] Set up directory structure.
+- [x] Set up CMake files and make them modular.
 - [x] Set up GitHub repository.
 
 ### 2. Basic Game Implementation

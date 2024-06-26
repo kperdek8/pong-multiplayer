@@ -4,5 +4,6 @@ qt_add_executable(pong
 
 target_link_libraries(pong PRIVATE
                       Qt6::Core
-#                     Qt6::Widgets
+                      Qt6::Quick
+                      GameLib
 )
