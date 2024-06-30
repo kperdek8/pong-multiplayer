@@ -3,6 +3,15 @@ qt_add_library(GameLib SHARED
                GameController.h
                GameObjects.cpp
                GameObjects.h
+               Connection.cpp
+               Connection.h
+               Action.h
+               GameState.cpp
+               GameState.h
+               Direction.cpp
+               Direction.h
+               GameField.cpp
+               GameField.h
 )
 
 target_link_libraries(GameLib PRIVATE
