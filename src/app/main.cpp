@@ -1,5 +1,6 @@
 #include "GameController.h"
 #include <iostream>
+#include <unistd.h>
 
 int main() {
   std::cout << "Hello, World!" << std::endl;
@@ -33,18 +34,11 @@ int main() {
     return 1;
   }
 
-  controller.update();
   connection1->sendAction(Action::MOVE_UP);
-  controller.update();
-  connection2->sendAction(Action::MOVE_DOWN);
-  controller.update();
-  connection2->sendAction(Action::MOVE_UP);
-  controller.update();
-  connection1->sendAction(Action::MOVE_DOWN);
-  connection2->sendAction(Action::MOVE_DOWN);
-  controller.update();
-  connection1->sendAction(Action::MOVE_DOWN);
-  connection2->sendAction(Action::MOVE_DOWN);
-  controller.update();
+  controller.start();
+  while (true) {
+    controller.update();
+    usleep(1000);
+  }
   return 0;
 }

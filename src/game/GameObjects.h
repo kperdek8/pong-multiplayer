@@ -7,6 +7,7 @@
 
 #include "Direction.h"
 #include "GameField.h"
+#include "Vector2D.h"
 #include <random>
 
 enum class Side { LEFT = 0, RIGHT = 1 };
@@ -14,49 +15,56 @@ enum class Side { LEFT = 0, RIGHT = 1 };
 class GameObject {
 public:
   const float width, height;
-  [[nodiscard]] float getX() const { return x_; };
-  [[nodiscard]] float getY() const { return x_; };
+  [[nodiscard]] Vector2D getPos() const { return position_; };
+  [[nodiscard]] float getX() const { return position_.x; };
+  [[nodiscard]] float getY() const { return position_.y; };
+
+  [[nodiscard]] Vector2D getVel() const { return velocity_; };
+  [[nodiscard]] float getVelX() const { return velocity_.x; };
+  [[nodiscard]] float getVelY() const { return velocity_.y; };
 
   GameObject(const float width, const float height)
       : width{width}, height{height} {}
   GameObject(const float width, const float height, const float x,
              const float y)
-      : width{width}, height{height}, x_{x}, y_{y} {}
+      : width{width}, height{height}, position_{x, y} {}
   virtual ~GameObject() = default;
 
   virtual void resetPosition() = 0;
 
-  [[nodiscard]] Direction boundsCollision(float xMovement,
-                                          float yMovement) const;
+  [[nodiscard]] Direction boundsCollision(const Vector2D &movement) const;
 
-  [[nodiscard]] bool objectCollision(const GameObject &, float xMovement,
-                                     float yMovement) const;
+  [[nodiscard]] Direction objectCollision(const GameObject &object,
+                                          const Vector2D &movement) const;
+  [[nodiscard]] Vector2D distanceToBounds(Direction direction) const;
+  [[nodiscard]] Vector2D distanceToObject(const GameObject &object) const;
 
-  void update(float dt);
+  void move(const Vector2D &movement);
 
 protected:
-  float x_ = 0.0f, y_ = 0.0f;
-  float xVelocity_ = 0.0f, yVelocity_ = 0.0f;
+  Vector2D position_{0.0f, 0.0f};
+  Vector2D velocity_{0.0f, 0.0f};
 };
 
 class Paddle final : public GameObject {
 public:
-  static constexpr float WIDTH = 50.0f;
-  static constexpr float HEIGHT = 300.0f;
-  static constexpr float MAX_VELOCITY = 50.0f;
+  static constexpr float WIDTH = 40.0f;
+  static constexpr float HEIGHT = 200.0f;
+  static constexpr float MOVESPEED = 50.0f;
 
   Paddle() : GameObject(WIDTH, HEIGHT) {}
   Paddle(const float x, const float y) : GameObject(WIDTH, HEIGHT, x, y) {}
 
   void resetPosition() override;
-  void addVelocity(float yVel);
+  void addVelocity(const Vector2D &movement);
+  void setVelocity(const Vector2D &movement);
 };
 
 class Ball final : public GameObject {
 public:
-  static constexpr float WIDTH = 50.0f;
-  static constexpr float HEIGHT = 50.0f;
-  static constexpr float INITIAL_VELOCITY = 50.0f;
+  static constexpr float WIDTH = 40.0f;
+  static constexpr float HEIGHT = 40.0f;
+  static constexpr float INITIAL_VELOCITY = 100.0f;
   static constexpr float MAX_ANGLE = 30.0f;
 
   Ball()
@@ -84,10 +92,14 @@ private:
 struct Player {
   explicit Player(const int id) : id(id) {}
 
+  static constexpr float margin = 30.0f;
   int id;
   int points = 0;
   Side side = id ? Side::RIGHT : Side::LEFT; // Player with id 0 on the left
-  Paddle paddle{};
+  Paddle paddle =
+      id ? Paddle{margin, (GameField::height - Paddle::HEIGHT) / 2.0f}
+         : Paddle{GameField::width - margin - Paddle::WIDTH,
+                  (GameField::height - Paddle::HEIGHT) / 2.0f};
 };
 
 #endif // GAMEOBJECTS_H

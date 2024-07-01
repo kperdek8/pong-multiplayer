@@ -21,4 +21,7 @@ void GameState::debugPrint() {
                            this->players[1].id, this->players[1].paddle.getX(),
                            this->players[1].paddle.getY())
             << std::endl;
+  std::cout << std::format("Ball position (x: {} y: {})", this->ball.getX(),
+                           this->ball.getY())
+            << std::endl;
 }

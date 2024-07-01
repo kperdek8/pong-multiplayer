@@ -5,6 +5,10 @@
 #ifndef DIRECTION_H
 #define DIRECTION_H
 
+/*
+  Direction is represented as bitmask to easily represent all eight directions.
+  If statements can check single bit instead of three independent values.
+*/
 enum Direction : unsigned char {
   TOP = 0b0001,
   LEFT = 0b0010,
@@ -23,9 +27,14 @@ inline Direction &operator|=(Direction &lhs, const Direction rhs) {
   return lhs;
 }
 
-inline bool operator&(const Direction lhs, const Direction rhs) {
-  return static_cast<bool>(static_cast<unsigned char>(lhs) &
-                           static_cast<unsigned char>(rhs));
+inline Direction operator&(const Direction lhs, const Direction rhs) {
+  return static_cast<Direction>(static_cast<unsigned char>(lhs) &
+                                static_cast<unsigned char>(rhs));
+}
+
+inline Direction &operator&=(Direction &lhs, const Direction rhs) {
+  lhs = lhs & rhs;
+  return lhs;
 }
 
 #endif // DIRECTION_H

@@ -8,10 +8,9 @@ qt_add_library(GameLib SHARED
                Action.h
                GameState.cpp
                GameState.h
-               Direction.cpp
                Direction.h
-               GameField.cpp
                GameField.h
+               Vector2D.h
 )
 
 target_link_libraries(GameLib PRIVATE
