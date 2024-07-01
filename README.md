@@ -27,8 +27,8 @@ In this project I am planning to create simple Pong game and implement as many l
 
 2.1 **Implement Core Game Logic**
 
-- [ ] Create basic game mechanics (ball movement, paddle control).
-- [ ] Implement collision detection for ball and paddles.
+- [x] Create basic game mechanics (ball movement, paddle control).
+- [x] Implement collision detection for ball and paddles.
 - [ ] Add scoring system.
 
 2.2 **Basic Rendering**
