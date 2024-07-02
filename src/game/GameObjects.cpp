@@ -33,13 +33,13 @@ Direction GameObject::objectCollision(const GameObject &object,
   Direction direction = Direction::NONE;
 
   // Specific direction is distinguished based on movement (negative/positive).
-  if (position_.x + movement.x <= object.position_.x + object.width &&
-      position_.x + width + movement.x >= object.position_.x) {
-    direction |= movement.x >= 0 ? Direction::RIGHT : Direction::LEFT;
+  if (position_.x + movement.x < object.position_.x + object.width &&
+      position_.x + width + movement.x > object.position_.x) {
+    direction |= movement.x > 0 ? Direction::RIGHT : Direction::LEFT;
   }
   if (position_.y + movement.y < object.position_.y + object.height &&
       position_.y + height + movement.y > object.position_.y) {
-    direction |= movement.y >= 0 ? Direction::TOP : Direction::BOTTOM;
+    direction |= movement.y > 0 ? Direction::TOP : Direction::BOTTOM;
   }
 
   // Return none if there is only one axis overlap (objects don't collide)
