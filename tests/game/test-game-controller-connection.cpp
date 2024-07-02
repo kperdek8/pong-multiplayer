@@ -3,7 +3,6 @@
 //
 #include <gtest/gtest.h>
 #include "GameController.h" // Include the header for GameController
-#include <iostream>
 #include <vector>
 #include <cassert>
 
