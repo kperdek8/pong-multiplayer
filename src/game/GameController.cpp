@@ -81,7 +81,8 @@ bool GameController::isConnectionAvailable() {
   return it != connections_.end();
 }
 
-inline void handleBoundsCollision(GameObject &object, Vector2D &movement) {
+void GameController::handleBoundsCollision(GameObject &object,
+                                           Vector2D &movement) {
   if (const auto direction = object.boundsCollision(movement)) {
     const auto distance = object.distanceToBounds(direction);
     if (direction & Direction::TOP)
@@ -93,16 +94,30 @@ inline void handleBoundsCollision(GameObject &object, Vector2D &movement) {
     else if (direction & Direction::LEFT)
       movement.x = std::max(movement.x, distance.x);
 
+    // Actions to do when object is of type 'Ball'
     if (auto *ball = dynamic_cast<Ball *>(&object)) {
-      ball->bounce(direction); // Call bounce if `object` is a `Ball`
+      if (direction & (Direction::LEFT | Direction::RIGHT)) {
+        // Goal! Reset the ball and add point
+        std::cout << "Goal!." << std::endl;
+        ball->resetPosition();
+        if (direction & Direction::LEFT)
+          gameState_.players[1].points += 1;
+        else
+          gameState_.players[0].points += 1;
+      } else {
+        // Not a goal, bounce the ball
+        std::cout << "Ball collided with bounds and bounced." << std::endl;
+        ball->bounce(direction);
+      }
     }
   }
 }
 
-inline void handleObjectCollision(GameObject &object, Vector2D &movement,
-                                  const GameObject &otherObject) {
+void GameController::handleObjectCollision(GameObject &object,
+                                           Vector2D &movement,
+                                           const GameObject &otherObject) {
   if (const auto direction = object.objectCollision(otherObject, movement)) {
-    auto distance = object.distanceToObject(otherObject);
+    const auto distance = object.distanceToObject(otherObject);
     if (direction & Direction::TOP)
       movement.y = std::min(movement.y, distance.y);
     else if (direction & Direction::BOTTOM)
@@ -112,8 +127,10 @@ inline void handleObjectCollision(GameObject &object, Vector2D &movement,
     else if (direction & Direction::LEFT)
       movement.x = std::max(movement.x, distance.x);
 
+    // Actions to do when object is of type 'Ball'
     if (auto *ball = dynamic_cast<Ball *>(&object)) {
-      ball->bounce(direction); // Call bounce if `object` is a `Ball`
+      std::cout << "Ball collided with paddle and bounced." << std::endl;
+      ball->bounce(direction);
     }
   }
 }

@@ -43,8 +43,8 @@ Direction GameObject::objectCollision(const GameObject &object,
   }
 
   // Return none if there is only one axis overlap (objects don't collide)
-  if (!direction & (Direction::LEFT | Direction::RIGHT) ||
-      !direction & (Direction::TOP | Direction::BOTTOM))
+  if (!(direction & (Direction::LEFT | Direction::RIGHT)) ||
+      !(direction & (Direction::TOP | Direction::BOTTOM)))
     return Direction::NONE;
 
   // Check for overlap before movement
@@ -164,6 +164,7 @@ void Ball::start(const Side lastGoal) {
   }
 }
 void Ball::resetPosition() {
+  velocity_ = Vector2D{0, 0};
   position_.x = GameField::width / 2.0f;
   position_.y = GameField::height / 2.0f;
 }

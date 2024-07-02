@@ -29,7 +29,7 @@ In this project I am planning to create simple Pong game and implement as many l
 
 - [x] Create basic game mechanics (ball movement, paddle control).
 - [x] Implement collision detection for ball and paddles.
-- [ ] Add scoring system.
+- [x] Add scoring system.
 
 2.2 **Basic Rendering**
 
@@ -55,20 +55,28 @@ In this project I am planning to create simple Pong game and implement as many l
 - [ ] Set up server-client architecture.
 - [ ] Implement basic data transmission for game state.
 
-### 5. Audio Integration
+### 5. Gameplay Enhancement
+
+5.1 **Game Rules**
+
+- [ ] Add new game rules e.g. different ball physics/behaviour, paddle sizes etc.
+- [ ] Make game rules selectable.
+
+
+### 6. Audio Integration
 
 5.1 **Sound Effects**
 
 - [ ] Add sound effects for in-game events (ball hit, score).
 
-### 6. Artificial Intelligence
+### 7. Artificial Intelligence
 
 6.1 **Basic AI**
 
 - [ ] Implement a simple AI opponent.
 - [ ] Create different difficulty levels.
 
-### 7. Advanced Rendering (OpenGL)
+### 8. Advanced Rendering (OpenGL)
 
 7.1 **OpenGL Setup**
 

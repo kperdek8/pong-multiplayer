@@ -34,11 +34,11 @@ int main() {
     return 1;
   }
 
-  connection1->sendAction(Action::MOVE_UP);
+  // connection1->sendAction(Action::MOVE_UP);
   controller.start();
   while (true) {
     controller.update();
-    usleep(1000);
+    usleep(1000000);
   }
   return 0;
 }
