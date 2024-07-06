@@ -4,12 +4,25 @@ project(pong VERSION 1.0.0 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+option(SDL_SHARED "SDL_SHARED" OFF)
+option(SDL_STATIC "SDL_STATIC" ON)
 
 cmake_policy(SET CMP0135 NEW)
 
-find_package(Qt6 REQUIRED COMPONENTS Core Quick)
-qt_standard_project_setup()
+include(FetchContent)
 
-add_subdirectory(src/app)
-add_subdirectory(src/game)
+find_package(SDL3 QUIET)
+
+if (NOT SDL3_FOUND)
+  message(STATUS "SDL3 not found, using FetchContent to download it.")
+  FetchContent_Declare(
+          SDL3
+          GIT_REPOSITORY https://github.com/libsdl-org/SDL
+          GIT_TAG origin/main
+  )
+
+  FetchContent_MakeAvailable(SDL3)
+endif()
+
+add_subdirectory(src)
 add_subdirectory(tests)
