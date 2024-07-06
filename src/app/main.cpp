@@ -1,9 +1,21 @@
 #include "GameController.h"
 #include <iostream>
 #include <unistd.h>
+#include <SDL3/SDL.h>
 
 int main() {
-  std::cout << "Hello, World!" << std::endl;
+  if (SDL_Init(SDL_INIT_VIDEO) < 0) {
+    std::cerr << "Failed to initialize SDL: " << SDL_GetError() << std::endl;
+    return 1;
+  }
+
+  SDL_Window* window = SDL_CreateWindow("SDL3 Project", 800, 600, SDL_WINDOW_OPENGL);
+  if (!window) {
+    std::cerr << "Failed to create window: " << SDL_GetError() << std::endl;
+    SDL_Quit();
+    return 1;
+  }
+
   GameController controller;
 
   // Attach the first connection
@@ -40,5 +52,9 @@ int main() {
     controller.update();
     usleep(1000000);
   }
+
+  SDL_DestroyWindow(window);
+  SDL_Quit();
+
   return 0;
 }
