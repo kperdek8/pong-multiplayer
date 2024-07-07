@@ -17,4 +17,5 @@ set(GAME_HEADERS
 )
 
 add_library(GameLib ${GAME_SOURCES} ${GAME_HEADERS})
+set_target_properties(GameLib PROPERTIES PREFIX "")
 target_include_directories(GameLib PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
