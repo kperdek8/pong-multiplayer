@@ -8,7 +8,7 @@ In this project I am planning to create simple Pong game and implement as many l
 
 * Multithreading
 * Multiplayer with basic networking
-* Rendering using QT (with future plans to replace it with OpenGL via GLFW)
+* Rendering using SDL (with future plans to replace it with OpenGL/Vulkan context)
 * Audio processing for sound effects
 * AI opponent
 
@@ -33,7 +33,7 @@ In this project I am planning to create simple Pong game and implement as many l
 
 2.2 **Basic Rendering**
 
-- [ ] Set up a simple game window using Qt.
+- [ ] Set up a simple game window using SDL.
 - [ ] Render game elements (ball, paddles, background).
 - [ ] Set up scene handler
 
