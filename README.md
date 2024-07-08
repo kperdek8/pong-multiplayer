@@ -33,8 +33,8 @@ In this project I am planning to create simple Pong game and implement as many l
 
 2.2 **Basic Rendering**
 
-- [ ] Set up a simple game window using SDL.
-- [ ] Render game elements (ball, paddles, background).
+- [X] Set up a simple game window using SDL.
+- [X] Render game elements (ball, paddles, background).
 - [ ] Set up scene handler
 
 2.3 **Input Handling**

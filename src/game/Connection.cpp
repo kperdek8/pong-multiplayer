@@ -21,3 +21,6 @@ Connection::~Connection() {
 void Connection::sendAction(const Action action) const {
   callbackFunc_(action, this->getId());
 }
+const GameState& Connection::getStateRef() const {
+  return gameState_;
+}

@@ -19,6 +19,7 @@ struct GameState {
   Ball ball;
   Side lastGoal = Side::LEFT;
 
+  [[nodiscard]] std::vector<const GameObject*> getObjects() const;
   void debugPrint();
 };
 

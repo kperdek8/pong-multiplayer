@@ -6,7 +6,7 @@
 int main() {
 
   GameController controller;
-  Renderer* renderer = Renderer::GetInstance();
+  Renderer renderer;
 
   // Attach the first connection
   std::optional<std::weak_ptr<Connection>> optConnection1 = controller.attach();
@@ -35,12 +35,12 @@ int main() {
     std::cerr << "Failed to lock second connection" << std::endl;
     return 1;
   }
-
+  const GameState& gameState = connection1->getStateRef();
   // connection1->sendAction(Action::MOVE_UP);
   controller.start();
   while (true) {
     controller.update();
-    usleep(1000000);
+    renderer.update(gameState.getObjects());
   }
 
   return 0;

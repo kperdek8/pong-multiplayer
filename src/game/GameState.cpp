@@ -6,6 +6,17 @@
 #include <format>
 #include <iostream>
 
+std::vector<const GameObject*> GameState::getObjects() const{
+  std::vector<const GameObject*> objects;
+  objects.push_back(&ball);
+
+  for (auto& player : players) {
+    objects.push_back(&player.paddle);
+  }
+
+  return objects;
+}
+
 void GameState::debugPrint() {
   std::cout << std::format("Last goal by {}",
                            (this->lastGoal == Side::LEFT ? "left" : "right"))

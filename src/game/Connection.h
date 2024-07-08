@@ -17,6 +17,7 @@ public:
   ~Connection();
   void sendAction(Action action) const;
   [[nodiscard]] constexpr int getId() const { return player_.id; }
+  [[nodiscard]] const GameState& getStateRef() const;
 
 private:
   std::function<void(Action, int)> callbackFunc_;

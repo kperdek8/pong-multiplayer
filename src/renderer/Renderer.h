@@ -5,20 +5,20 @@
 #ifndef RENDERER_H
 #define RENDERER_H
 
+#include <SDL3/SDL_render.h>
 #include <SDL3/SDL_video.h>
-#include <memory>
+#include <vector>
+
+class GameObject;
 
 class Renderer {
 public:
-  Renderer& operator=(const Renderer&) = delete;
-  Renderer(const Renderer &other) = delete;
-  static Renderer* GetInstance();
-private:
+  void update(const std::vector<const GameObject*>& objects) const;
   Renderer();
-  ~Renderer() = default;
-
-  static Renderer* instance_;
-  static std::mutex mutex_;
+private:
+  void DrawObject(const GameObject* object) const;
+  SDL_Color objectColor_{255, 255, 255, 255};
+  SDL_Renderer* renderer_;
   SDL_Window* window_;
 };
 
