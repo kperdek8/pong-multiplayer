@@ -1,22 +1,20 @@
 #include "GameController.h"
-#include <iostream>
-#include <unistd.h>
 #include "Renderer.h"
+#include <iostream>
 
 int main() {
-
   GameController controller;
   Renderer renderer;
 
   // Attach the first connection
-  std::optional<std::weak_ptr<Connection>> optConnection1 = controller.attach();
+  std::optional<std::weak_ptr<Connection> > optConnection1 = controller.attach();
   if (!optConnection1) {
     std::cerr << "Failed to attach first connection" << std::endl;
     return 1;
   }
 
   // Attach the second connection
-  std::optional<std::weak_ptr<Connection>> optConnection2 = controller.attach();
+  std::optional<std::weak_ptr<Connection> > optConnection2 = controller.attach();
   if (!optConnection2) {
     std::cerr << "Failed to attach second connection" << std::endl;
     return 1;
@@ -35,7 +33,7 @@ int main() {
     std::cerr << "Failed to lock second connection" << std::endl;
     return 1;
   }
-  const GameState& gameState = connection1->getStateRef();
+  const GameState &gameState = connection1->getStateRef();
   // connection1->sendAction(Action::MOVE_UP);
   controller.start();
   while (true) {

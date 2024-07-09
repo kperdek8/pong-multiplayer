@@ -22,7 +22,7 @@
     )
 
     FetchContent_MakeAvailable(SDL3)
-  endif()
+  endif ()
 
   include_directories(${sdl3_SOURCE_DIR}/include)
   include_directories(${sdl3_BINARY_DIR})

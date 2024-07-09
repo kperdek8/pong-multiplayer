@@ -135,11 +135,11 @@ void GameObject::move(const Vector2D &movement) {
 /* Paddle Class */
 
 void Paddle::resetPosition() { position_.y = GameField::height / 2.0f; }
+
 void Paddle::addVelocity(const Vector2D &movement) {
-  velocity_.y += velocity_.y + movement.y <= MOVESPEED
-                     ? movement.y
-                     : MOVESPEED - velocity_.y;
+  velocity_.y += velocity_.y + movement.y <= MOVESPEED ? movement.y : MOVESPEED - velocity_.y;
 }
+
 void Paddle::setVelocity(const Vector2D &movement) { velocity_.y = movement.y; }
 
 /* Ball Class */
@@ -152,6 +152,7 @@ void Ball::bounce(const Direction direction) {
     velocity_.x = -velocity_.x;
   }
 }
+
 void Ball::start(const Side lastGoal) {
   const float angleDeviation = angleDist_(gen_);
 
@@ -163,6 +164,7 @@ void Ball::start(const Side lastGoal) {
     velocity_.y = INITIAL_VELOCITY * std::sin(angleDeviation);
   }
 }
+
 void Ball::resetPosition() {
   velocity_ = Vector2D{0, 0};
   position_.x = GameField::width / 2.0f;
