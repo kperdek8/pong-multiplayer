@@ -20,14 +20,20 @@
 class GameController {
 public:
   GameController()
-      : gameState_{Player{0}, Player{1},
-                   Ball{GameField::width / 2.0f, GameField::height / 2.0f}} {};
-  std::optional<std::weak_ptr<Connection>> attach();
+    : gameState_{Player{0}, Player{1}, Ball{GameField::width / 2.0f, GameField::height / 2.0f}} {
+  };
+
+  std::optional<std::weak_ptr<Connection> > attach();
+
   void detach(const std::weak_ptr<Connection> &connection);
+
   std::size_t getConnectionCount();
+
   bool isConnectionAvailable();
+
   // Make these private later and manipulate gameloop only via connection.
   void update();
+
   void start();
 
 private:
@@ -37,9 +43,12 @@ private:
   std::chrono::time_point<std::chrono::high_resolution_clock> lastFrame_;
 
   std::array<std::shared_ptr<Connection>, MAX_PLAYERS> connections_{};
+
   void handleBoundsCollision(GameObject &object, Vector2D &movement);
+
   void handleObjectCollision(GameObject &object, Vector2D &movement,
                              const GameObject &otherObject);
+
   void processAction(Action action, int id);
 };
 

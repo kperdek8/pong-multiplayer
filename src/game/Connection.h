@@ -14,10 +14,14 @@ class Connection {
 public:
   explicit Connection(const std::function<void(Action, int)> &callbackFunc,
                       const Player &player, const GameState &gameState);
+
   ~Connection();
+
   void sendAction(Action action) const;
+
   [[nodiscard]] constexpr int getId() const { return player_.id; }
-  [[nodiscard]] const GameState& getStateRef() const;
+
+  [[nodiscard]] const GameState &getStateRef() const;
 
 private:
   std::function<void(Action, int)> callbackFunc_;

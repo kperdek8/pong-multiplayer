@@ -10,11 +10,11 @@
   If statements can check single bit instead of three independent values.
 */
 enum Direction : unsigned char {
-  TOP = 0b0001,
-  LEFT = 0b0010,
+  TOP    = 0b0001,
+  LEFT   = 0b0010,
   BOTTOM = 0b0100,
-  RIGHT = 0b1000,
-  NONE = 0b0000
+  RIGHT  = 0b1000,
+  NONE   = 0b0000
 };
 
 inline Direction operator|(const Direction lhs, const Direction rhs) {

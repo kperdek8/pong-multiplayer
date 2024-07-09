@@ -62,7 +62,6 @@ In this project I am planning to create simple Pong game and implement as many l
 - [ ] Add new game rules e.g. different ball physics/behaviour, paddle sizes etc.
 - [ ] Make game rules selectable.
 
-
 ### 6. Audio Integration
 
 5.1 **Sound Effects**

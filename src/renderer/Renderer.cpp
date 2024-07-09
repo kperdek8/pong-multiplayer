@@ -12,14 +12,14 @@ static constexpr std::string TITLE = "Pong";
 static constexpr uint16_t WIDTH = 1920;
 static constexpr uint16_t HEIGHT = 1080;
 
-void Renderer::update(const std::vector<const GameObject*>& objects) const{
+void Renderer::update(const std::vector<const GameObject *> &objects) const {
   SDL_Event event;
   while (SDL_PollEvent(&event)) {
     break;
   }
   SDL_SetRenderDrawColor(renderer_, 0x00, 0x00, 0x00, 0x00);
   SDL_RenderClear(renderer_);
-  for (auto& object : objects) {
+  for (auto &object: objects) {
     DrawObject(object);
   }
 
@@ -42,9 +42,9 @@ Renderer::Renderer() {
     SDL_Quit();
   }
 }
-void Renderer::DrawObject(const GameObject* object) const{
-  const SDL_FRect rect = { object->getX(), object->getY(),
-    object->width, object->height };
+
+void Renderer::DrawObject(const GameObject *object) const {
+  const SDL_FRect rect = {object->getX(), object->getY(), object->width, object->height};
   SDL_SetRenderDrawColor(renderer_, objectColor_.r, objectColor_.g, objectColor_.b, objectColor_.a);
   SDL_RenderFillRect(renderer_, &rect);
 };
