@@ -24,10 +24,14 @@ public:
   [[nodiscard]] float getVelY() const { return velocity_.y; };
 
   GameObject(const float width, const float height)
-      : width{width}, height{height} {}
+    : width{width}, height{height} {
+  }
+
   GameObject(const float width, const float height, const float x,
              const float y)
-      : width{width}, height{height}, position_{x, y} {}
+    : width{width}, height{height}, position_{x, y} {
+  }
+
   virtual ~GameObject() = default;
 
   virtual void resetPosition() = 0;
@@ -36,7 +40,9 @@ public:
 
   [[nodiscard]] Direction objectCollision(const GameObject &object,
                                           const Vector2D &movement) const;
+
   [[nodiscard]] Vector2D distanceToBounds(Direction direction) const;
+
   [[nodiscard]] Vector2D distanceToObject(const GameObject &object) const;
 
   void move(const Vector2D &movement);
@@ -52,11 +58,16 @@ public:
   static constexpr float HEIGHT = 200.0f;
   static constexpr float MOVESPEED = 50.0f;
 
-  Paddle() : GameObject(WIDTH, HEIGHT) {}
-  Paddle(const float x, const float y) : GameObject(WIDTH, HEIGHT, x, y) {}
+  Paddle() : GameObject(WIDTH, HEIGHT) {
+  }
+
+  Paddle(const float x, const float y) : GameObject(WIDTH, HEIGHT, x, y) {
+  }
 
   void resetPosition() override;
+
   void addVelocity(const Vector2D &movement);
+
   void setVelocity(const Vector2D &movement);
 };
 
@@ -68,19 +79,22 @@ public:
   static constexpr float MAX_ANGLE = 30.0f;
 
   Ball()
-      : GameObject(WIDTH, HEIGHT), gen_{std::mt19937(std::random_device{}())} {
+    : GameObject(WIDTH, HEIGHT), gen_{std::mt19937(std::random_device{}())} {
     angleDist_ = std::uniform_real_distribution<float>(
-        -MAX_ANGLE * M_PI / 180.0f, MAX_ANGLE * M_PI / 180.0f);
+                                                       -MAX_ANGLE * M_PI / 180.0f, MAX_ANGLE * M_PI / 180.0f);
   }
+
   Ball(const float x, const float y)
-      : GameObject(WIDTH, HEIGHT, x, y),
-        gen_{std::mt19937(std::random_device{}())} {
+    : GameObject(WIDTH, HEIGHT, x, y),
+      gen_{std::mt19937(std::random_device{}())} {
     angleDist_ = std::uniform_real_distribution<float>(
-        -MAX_ANGLE * M_PI / 180.0f, MAX_ANGLE * M_PI / 180.0f);
+                                                       -MAX_ANGLE * M_PI / 180.0f, MAX_ANGLE * M_PI / 180.0f);
   }
 
   void bounce(Direction direction);
+
   void start(Side lastGoal);
+
   void resetPosition() override;
 
 private:
@@ -90,16 +104,16 @@ private:
 };
 
 struct Player {
-  explicit Player(const int id) : id(id) {}
+  explicit Player(const int id) : id(id) {
+  }
 
   static constexpr float margin = 30.0f;
   int id;
   int points = 0;
   Side side = id ? Side::RIGHT : Side::LEFT; // Player with id 0 on the left
-  Paddle paddle =
-      id ? Paddle{margin, (GameField::height - Paddle::HEIGHT) / 2.0f}
-         : Paddle{GameField::width - margin - Paddle::WIDTH,
-                  (GameField::height - Paddle::HEIGHT) / 2.0f};
+  Paddle paddle = id
+                    ? Paddle{margin, (GameField::height - Paddle::HEIGHT) / 2.0f}
+                    : Paddle{GameField::width - margin - Paddle::WIDTH, (GameField::height - Paddle::HEIGHT) / 2.0f};
 };
 
 #endif // GAMEOBJECTS_H

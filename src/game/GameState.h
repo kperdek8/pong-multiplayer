@@ -14,12 +14,14 @@ constexpr std::size_t MAX_PLAYERS = 2;
 
 struct GameState {
   GameState(const Player &player1, const Player &player2, Ball ball)
-      : players{player1, player2}, ball{std::move(ball)} {};
+    : players{player1, player2}, ball{std::move(ball)} {
+  };
   std::array<Player, MAX_PLAYERS> players;
   Ball ball;
   Side lastGoal = Side::LEFT;
 
-  [[nodiscard]] std::vector<const GameObject*> getObjects() const;
+  [[nodiscard]] std::vector<const GameObject *> getObjects() const;
+
   void debugPrint();
 };
 

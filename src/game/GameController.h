@@ -21,7 +21,7 @@ class GameController {
 public:
   GameController()
     : gameState_{Player{0}, Player{1}, Ball{GameField::width / 2.0f, GameField::height / 2.0f}} {
-  };
+  }
 
   std::optional<std::weak_ptr<Connection> > attach();
 

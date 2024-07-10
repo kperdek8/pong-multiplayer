@@ -8,10 +8,10 @@
 #include <format>
 #include <iostream>
 
-std::optional<std::weak_ptr<Connection>> GameController::attach() {
+std::optional<std::weak_ptr<Connection> > GameController::attach() {
   // Check if there is empty connection slot
   const auto it = std::ranges::find_if(
-      connections_, [](const auto &conn) { return conn == nullptr; });
+                                       connections_, [](const auto &conn) { return conn == nullptr; });
 
   // Reject connection if all slots are taken
   if (it == connections_.end()) {
@@ -41,7 +41,7 @@ void GameController::detach(const std::weak_ptr<Connection> &connection) {
     if (it != connections_.end()) {
       it->reset();
       std::cout << std::format("Connection {} detached", shared_conn->getId())
-                << std::endl;
+          << std::endl;
     }
   }
 }
@@ -50,34 +50,37 @@ void GameController::processAction(const Action action, int id) {
   std::cout << std::format("Connection {}: ", id);
   constexpr auto speed = Paddle::MOVESPEED;
   switch (action) {
-  case Action::NONE:
-    std::cout << "No Actions!" << std::endl;
-  case Action::MOVE_UP:
-    std::cout << "Move up!" << std::endl;
-    gameState_.players[id].paddle.addVelocity(Vector2D{0, speed});
-    break;
-  case Action::MOVE_DOWN:
-    std::cout << "Move down!" << std::endl;
-    gameState_.players[id].paddle.addVelocity(Vector2D{0, -speed});
-    break;
-  case Action::PAUSE:
-    std::cout << "Pause" << std::endl;
-    break;
-  case Action::START:
-    std::cout << "Start" << std::endl;
-    break;
+    case Action::NONE:
+      std::cout << "No Actions!" << std::endl;
+    case Action::MOVE_UP:
+      std::cout << "Move up!" << std::endl;
+      gameState_.players[id].paddle.addVelocity(Vector2D{0, speed});
+      break;
+    case Action::MOVE_DOWN:
+      std::cout << "Move down!" << std::endl;
+      gameState_.players[id].paddle.addVelocity(Vector2D{0, -speed});
+      break;
+    case Action::PAUSE:
+      std::cout << "Pause" << std::endl;
+      break;
+    case Action::START:
+      std::cout << "Start" << std::endl;
+      break;
+    case Action::QUIT:
+      std::cout << "Quitting" << std::endl;
+      break;
   }
 }
 
 std::size_t GameController::getConnectionCount() {
   const auto connections = std::ranges::count_if(
-      connections_, [](const auto &conn) { return conn != nullptr; });
+                                                 connections_, [](const auto &conn) { return conn != nullptr; });
   return connections;
 }
 
 bool GameController::isConnectionAvailable() {
   const auto it = std::ranges::find_if(
-      connections_, [](const auto &conn) { return conn == nullptr; });
+                                       connections_, [](const auto &conn) { return conn == nullptr; });
   return it != connections_.end();
 }
 
@@ -143,7 +146,7 @@ void GameController::update() {
   lastFrame_ = currentFrame;
 
   // Paddles
-  for (auto &player : gameState_.players) {
+  for (auto &player: gameState_.players) {
     auto movement = player.paddle.getVel() * dt;
     handleBoundsCollision(player.paddle, movement);
     player.paddle.move(movement);
@@ -152,7 +155,7 @@ void GameController::update() {
   // Ball
   auto movement = gameState_.ball.getVel() * dt;
 
-  for (auto &player : gameState_.players) {
+  for (auto &player: gameState_.players) {
     handleObjectCollision(gameState_.ball, movement, player.paddle);
   }
 
@@ -162,8 +165,9 @@ void GameController::update() {
   gameState_.ball.move(movement);
 
   // Other stuff
-  gameState_.debugPrint();
+  //gameState_.debugPrint();
 }
+
 void GameController::start() {
   gameStarted_ = true;
   lastFrame_ = std::chrono::high_resolution_clock::now();

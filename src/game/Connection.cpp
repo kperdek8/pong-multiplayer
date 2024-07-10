@@ -6,8 +6,6 @@
 #include <format>
 #include <iostream>
 
-/* Connection Class */
-
 Connection::Connection(const std::function<void(Action, int)> &callbackFunc,
                        const Player &player, const GameState &gameState)
   : callbackFunc_{callbackFunc}, player_{player}, gameState_{gameState} {

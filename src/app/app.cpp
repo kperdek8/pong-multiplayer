@@ -2,6 +2,33 @@
 #include "Renderer.h"
 #include <iostream>
 
+#include "InputHandler.h"
+#include "KeyMapping.h"
+#include "Action.h"
+#include "SDL3/SDL_keycode.h"
+
+const KeyMapping player1_keys = {
+  std::pair(SDLK_W, Action::MOVE_UP),
+  std::pair(SDLK_S, Action::MOVE_DOWN),
+  std::pair(SDLK_P, Action::PAUSE),
+  std::pair(SDLK_ESCAPE, Action::QUIT),
+  std::pair(SDLK_SPACE, Action::START)
+};
+const KeyMapping player2_keys = {
+  std::pair(SDLK_UP, Action::MOVE_UP),
+  std::pair(SDLK_DOWN, Action::MOVE_DOWN),
+  std::pair(SDLK_P, Action::PAUSE),
+  std::pair(SDLK_ESCAPE, Action::QUIT),
+  std::pair(SDLK_SPACE, Action::START)
+};
+
+
+// TODO: Add unit tests for Input Handler
+// TODO: Implement action handling for game controller (currently paddle won't stop upon key release)
+// TODO: Fix coordinate orientation (my logic assumed y=0 to be bottom of screen while in SDL it's the top)
+// TODO: Fix weird bug which creates players paddle on opposite side than intended.
+// TODO: Adjust objects velocity
+
 int main() {
   GameController controller;
   Renderer renderer;
@@ -34,11 +61,18 @@ int main() {
     return 1;
   }
   const GameState &gameState = connection1->getStateRef();
-  // connection1->sendAction(Action::MOVE_UP);
+
+  InputHandler inputHandler{connection1, connection2, player1_keys, player2_keys};
+
   controller.start();
-  while (true) {
+  bool running = true;
+  while (running) {
     controller.update();
     renderer.update(gameState.getObjects());
+    inputHandler.handleInput();
+    if (inputHandler.isActionTriggered(Action::QUIT)) {
+      running = false;
+    }
   }
 
   return 0;
