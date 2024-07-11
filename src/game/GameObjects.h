@@ -5,6 +5,8 @@
 #ifndef GAMEOBJECTS_H
 #define GAMEOBJECTS_H
 
+#include <iostream>
+
 #include "Direction.h"
 #include "GameField.h"
 #include "Vector2D.h"
@@ -66,9 +68,9 @@ public:
 
   void resetPosition() override;
 
-  void addVelocity(const Vector2D &movement);
+  void addVelocity(const Vector2D &velocity);
 
-  void setVelocity(const Vector2D &movement);
+  void setVelocity(const Vector2D &velocity);
 };
 
 class Ball final : public GameObject {
@@ -105,15 +107,20 @@ private:
 
 struct Player {
   explicit Player(const int id) : id(id) {
+    std::cout<<"Player "<<id<<" paddle's x: "<<this->paddle.getX()<<std::endl;
   }
 
-  static constexpr float margin = 30.0f;
+  static constexpr float MARGIN = 30.0f;
+  static constexpr float LEFT_PADDLE_X = MARGIN;
+  static constexpr float RIGHT_PADDLE_X = GameField::width - MARGIN - Paddle::WIDTH;
+  static constexpr float INITIAL_PADDLE_Y = (GameField::height - Paddle::HEIGHT) / 2.0f;
+
   int id;
   int points = 0;
   Side side = id ? Side::RIGHT : Side::LEFT; // Player with id 0 on the left
   Paddle paddle = id
-                    ? Paddle{margin, (GameField::height - Paddle::HEIGHT) / 2.0f}
-                    : Paddle{GameField::width - margin - Paddle::WIDTH, (GameField::height - Paddle::HEIGHT) / 2.0f};
+                    ? Paddle{RIGHT_PADDLE_X, INITIAL_PADDLE_Y}
+                    : Paddle{LEFT_PADDLE_X, INITIAL_PADDLE_Y};
 };
 
 #endif // GAMEOBJECTS_H

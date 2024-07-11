@@ -38,18 +38,18 @@ TEST_F(GameObjectTest, BoundsCollision) {
   // Origin "hitbox"
   EXPECT_EQ(gameObject.boundsCollision(Vector2D{-1.0f, 0.0f}), Direction::LEFT);
   EXPECT_EQ(gameObject.boundsCollision(Vector2D{GameField::width+1.0f, 0.0f}), Direction::RIGHT);
-  EXPECT_EQ(gameObject.boundsCollision(Vector2D{0.0f, -1.0f}), Direction::BOTTOM);
-  EXPECT_EQ(gameObject.boundsCollision(Vector2D{0.0f, GameField::height+1.0f}), Direction::TOP);
+  EXPECT_EQ(gameObject.boundsCollision(Vector2D{0.0f, -1.0f}), Direction::TOP);
+  EXPECT_EQ(gameObject.boundsCollision(Vector2D{0.0f, GameField::height+1.0f}), Direction::BOTTOM);
   // Closest edge "hitbox"
   EXPECT_EQ(gameObject.boundsCollision(Vector2D{-1.0f, 0.0f}), Direction::LEFT);
   EXPECT_EQ(gameObject.boundsCollision(Vector2D{GameField::width-gameObject.width+1.0f, 0.0f}), Direction::RIGHT);
-  EXPECT_EQ(gameObject.boundsCollision(Vector2D{0.0f, -1.0f}), Direction::BOTTOM);
-  EXPECT_EQ(gameObject.boundsCollision(Vector2D{0.0f, GameField::height-gameObject.height+1.0f}), Direction::TOP);
+  EXPECT_EQ(gameObject.boundsCollision(Vector2D{0.0f, -1.0f}), Direction::TOP);
+  EXPECT_EQ(gameObject.boundsCollision(Vector2D{0.0f, GameField::height-gameObject.height+1.0f}), Direction::BOTTOM);
   // Close, but not colliding
   EXPECT_NE(gameObject.boundsCollision(Vector2D{0.01f, 0.0f}), Direction::LEFT);
   EXPECT_NE(gameObject.boundsCollision(Vector2D{GameField::width-gameObject.width-0.01f, 0.0f}), Direction::RIGHT);
-  EXPECT_NE(gameObject.boundsCollision(Vector2D{0.0f, 0.01f}), Direction::BOTTOM);
-  EXPECT_NE(gameObject.boundsCollision(Vector2D{0.0f, GameField::height-gameObject.height-0.01f}), Direction::TOP);
+  EXPECT_NE(gameObject.boundsCollision(Vector2D{0.0f, 0.01f}), Direction::TOP);
+  EXPECT_NE(gameObject.boundsCollision(Vector2D{0.0f, GameField::height-gameObject.height-0.01f}), Direction::BOTTOM);
 }
 
 TEST_F(GameObjectTest, ObjectCollision) {
@@ -64,7 +64,7 @@ TEST_F(GameObjectTest, ObjectCollision) {
   gameObject.resetPosition();
   gameObject.move(Vector2D{15.0f,0.0f});
   EXPECT_EQ(gameObject.objectCollision(otherObject, Vector2D{0.0f, 4.99f}), Direction::NONE);
-  EXPECT_EQ(gameObject.objectCollision(otherObject, Vector2D{0.0f, 6.0f}), Direction::TOP);
+  EXPECT_EQ(gameObject.objectCollision(otherObject, Vector2D{0.0f, 6.0f}), Direction::BOTTOM);
 
   // Approach object from the left
   gameObject.resetPosition();
@@ -76,7 +76,7 @@ TEST_F(GameObjectTest, ObjectCollision) {
   gameObject.resetPosition();
   gameObject.move(Vector2D{15.0f,50.0f});
   EXPECT_EQ(gameObject.objectCollision(otherObject, Vector2D{0.0f, -4.99f}), Direction::NONE);
-  EXPECT_EQ(gameObject.objectCollision(otherObject, Vector2D{0.0f, -6.0f}), Direction::BOTTOM);
+  EXPECT_EQ(gameObject.objectCollision(otherObject, Vector2D{0.0f, -6.0f}), Direction::TOP);
 
   // Approach object from the right
   gameObject.resetPosition();

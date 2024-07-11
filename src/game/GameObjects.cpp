@@ -16,9 +16,9 @@ Direction GameObject::boundsCollision(const Vector2D &movement) const {
   else if (position_.x + width + movement.x > GameField::width)
     direction |= Direction::RIGHT;
   if (position_.y + movement.y < 0)
-    direction |= Direction::BOTTOM;
-  else if (position_.y + height + movement.y > GameField::height)
     direction |= Direction::TOP;
+  else if (position_.y + height + movement.y > GameField::height)
+    direction |= Direction::BOTTOM;
   return direction;
 }
 
@@ -39,7 +39,7 @@ Direction GameObject::objectCollision(const GameObject &object,
   }
   if (position_.y + movement.y < object.position_.y + object.height &&
       position_.y + height + movement.y > object.position_.y) {
-    direction |= movement.y > 0 ? Direction::TOP : Direction::BOTTOM;
+    direction |= movement.y > 0 ? Direction::BOTTOM : Direction::TOP;
   }
 
   // Return none if there is only one axis overlap (objects don't collide)
@@ -92,9 +92,9 @@ Vector2D GameObject::distanceToBounds(const Direction direction) const {
     minDistanceX = 0.0f - position_.x;
   else if (direction & Direction::RIGHT)
     minDistanceX = GameField::width - (position_.x + width);
-  if (direction & Direction::BOTTOM)
+  if (direction & Direction::TOP)
     minDistanceY = 0.0f - position_.y;
-  else if (direction & Direction::TOP)
+  else if (direction & Direction::BOTTOM)
     minDistanceY = GameField::height - (position_.y + height);
 
   return Vector2D(minDistanceX, minDistanceY);
@@ -136,11 +136,14 @@ void GameObject::move(const Vector2D &movement) {
 
 void Paddle::resetPosition() { position_.y = GameField::height / 2.0f; }
 
-void Paddle::addVelocity(const Vector2D &movement) {
-  velocity_.y += velocity_.y + movement.y <= MOVESPEED ? movement.y : MOVESPEED - velocity_.y;
+void Paddle::addVelocity(const Vector2D &velocity) {
+  if (velocity.y > 0)
+    velocity_.y += velocity_.y + velocity.y <= MOVESPEED ? velocity.y : MOVESPEED - velocity_.y;
+  else
+    velocity_.y += velocity_.y + velocity.y >= -MOVESPEED ? velocity.y : -MOVESPEED - velocity_.y;
 }
 
-void Paddle::setVelocity(const Vector2D &movement) { velocity_.y = movement.y; }
+void Paddle::setVelocity(const Vector2D &velocity) { velocity_.y = velocity.y; }
 
 /* Ball Class */
 

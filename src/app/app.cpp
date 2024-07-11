@@ -25,8 +25,6 @@ const KeyMapping player2_keys = {
 
 // TODO: Add unit tests for Input Handler
 // TODO: Implement action handling for game controller (currently paddle won't stop upon key release)
-// TODO: Fix coordinate orientation (my logic assumed y=0 to be bottom of screen while in SDL it's the top)
-// TODO: Fix weird bug which creates players paddle on opposite side than intended.
 // TODO: Adjust objects velocity
 
 int main() {

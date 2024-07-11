@@ -54,11 +54,11 @@ void GameController::processAction(const Action action, int id) {
       std::cout << "No Actions!" << std::endl;
     case Action::MOVE_UP:
       std::cout << "Move up!" << std::endl;
-      gameState_.players[id].paddle.addVelocity(Vector2D{0, speed});
+      gameState_.players[id].paddle.addVelocity(Vector2D{0, -speed});
       break;
     case Action::MOVE_DOWN:
       std::cout << "Move down!" << std::endl;
-      gameState_.players[id].paddle.addVelocity(Vector2D{0, -speed});
+      gameState_.players[id].paddle.addVelocity(Vector2D{0, speed});
       break;
     case Action::PAUSE:
       std::cout << "Pause" << std::endl;
@@ -88,9 +88,9 @@ void GameController::handleBoundsCollision(GameObject &object,
                                            Vector2D &movement) {
   if (const auto direction = object.boundsCollision(movement)) {
     const auto distance = object.distanceToBounds(direction);
-    if (direction & Direction::TOP)
+    if (direction & Direction::BOTTOM)
       movement.y = std::min(movement.y, distance.y);
-    else if (direction & Direction::BOTTOM)
+    else if (direction & Direction::TOP)
       movement.y = std::max(movement.y, distance.y);
     if (direction & Direction::RIGHT)
       movement.x = std::min(movement.x, distance.x);
@@ -121,9 +121,9 @@ void GameController::handleObjectCollision(GameObject &object,
                                            const GameObject &otherObject) {
   if (const auto direction = object.objectCollision(otherObject, movement)) {
     const auto distance = object.distanceToObject(otherObject);
-    if (direction & Direction::TOP)
+    if (direction & Direction::BOTTOM)
       movement.y = std::min(movement.y, distance.y);
-    else if (direction & Direction::BOTTOM)
+    else if (direction & Direction::TOP)
       movement.y = std::max(movement.y, distance.y);
     if (direction & Direction::RIGHT)
       movement.x = std::min(movement.x, distance.x);
