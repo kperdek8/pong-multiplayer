@@ -5,8 +5,6 @@
 #ifndef GAMEOBJECTS_H
 #define GAMEOBJECTS_H
 
-#include <iostream>
-
 #include "Direction.h"
 #include "GameField.h"
 #include "Vector2D.h"
@@ -58,7 +56,7 @@ class Paddle final : public GameObject {
 public:
   static constexpr float WIDTH = 40.0f;
   static constexpr float HEIGHT = 200.0f;
-  static constexpr float MOVESPEED = 50.0f;
+  static constexpr float MOVESPEED = 400.0f;
 
   Paddle() : GameObject(WIDTH, HEIGHT) {
   }
@@ -73,11 +71,13 @@ public:
   void setVelocity(const Vector2D &velocity);
 };
 
+// TODO: Make ball physics more interesting (add speed after paddle bounce and change angle based on hit part of paddle)
+
 class Ball final : public GameObject {
 public:
   static constexpr float WIDTH = 40.0f;
   static constexpr float HEIGHT = 40.0f;
-  static constexpr float INITIAL_VELOCITY = 100.0f;
+  static constexpr float INITIAL_VELOCITY = 1000.0f;
   static constexpr float MAX_ANGLE = 30.0f;
 
   Ball()
@@ -107,7 +107,6 @@ private:
 
 struct Player {
   explicit Player(const int id) : id(id) {
-    std::cout<<"Player "<<id<<" paddle's x: "<<this->paddle.getX()<<std::endl;
   }
 
   static constexpr float MARGIN = 30.0f;

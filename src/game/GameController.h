@@ -49,7 +49,7 @@ private:
   void handleObjectCollision(GameObject &object, Vector2D &movement,
                              const GameObject &otherObject);
 
-  void processAction(Action action, int id);
+  void processAction(Action action, bool isActivated, int id);
 };
 
 #endif // GAMECONTROLLER_H

@@ -25,7 +25,7 @@ TEST_F(PaddleTest, AddVelocity) {
   paddle.addVelocity(Vector2D{0.0f, 10.0f});
   EXPECT_FLOAT_EQ(paddle.getVelY(), 10.0f);
 
-  paddle.addVelocity(Vector2D{0.0f, 50.0f});
+  paddle.addVelocity(Vector2D{0.0f, Paddle::MOVESPEED+10.0f});
   EXPECT_FLOAT_EQ(paddle.getVelY(), Paddle::MOVESPEED);
 }
 

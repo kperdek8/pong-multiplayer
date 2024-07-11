@@ -24,8 +24,6 @@ const KeyMapping player2_keys = {
 
 
 // TODO: Add unit tests for Input Handler
-// TODO: Implement action handling for game controller (currently paddle won't stop upon key release)
-// TODO: Adjust objects velocity
 
 int main() {
   GameController controller;

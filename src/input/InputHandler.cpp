@@ -8,8 +8,10 @@
 #include <utility>
 #include <ranges>
 
-InputHandler::InputHandler(std::weak_ptr<Connection> connection1, std::weak_ptr<Connection> connection2, KeyMapping keyMapping1, KeyMapping keyMapping2)
-  : connection1_(std::move(connection1)), connection2_(std::move(connection2)), keyMapping1_(std::move(keyMapping1)), keyMapping2_(std::move(keyMapping2)) {
+InputHandler::InputHandler(std::weak_ptr<Connection> connection1, std::weak_ptr<Connection> connection2,
+                           KeyMapping keyMapping1, KeyMapping keyMapping2)
+  : connection1_(std::move(connection1)), connection2_(std::move(connection2)), keyMapping1_(std::move(keyMapping1)),
+    keyMapping2_(std::move(keyMapping2)) {
   // Initialize action states
   for (const Action &action: keyMapping1_.getKeyMappings() | std::views::values) {
     actionStates_[action] = false;
@@ -19,6 +21,7 @@ InputHandler::InputHandler(std::weak_ptr<Connection> connection1, std::weak_ptr<
   }
 }
 
+// TODO: Improve input handling. Some inputs are lost by this function, maybe caused by application being single thread.
 void InputHandler::handleInput() {
   SDL_Event event;
   while (SDL_PollEvent(&event)) {
@@ -55,6 +58,7 @@ bool InputHandler::isActionTriggered(const Action action) const {
 }
 
 void InputHandler::handleKeyEvent(const SDL_Keycode &key, const Uint32 &event) {
+  std::cout << "Handling key: " << key << " Event: " << event << std::endl;
   bool isPressed = (event == SDL_EVENT_KEY_DOWN);
   keyStates_[key] = isPressed;
 
@@ -62,9 +66,7 @@ void InputHandler::handleKeyEvent(const SDL_Keycode &key, const Uint32 &event) {
   Action action = keyMapping1_.getAction(key);
   std::shared_ptr<Connection> conn = connection1_.lock();
   if (action != Action::NONE && conn) {
-    if (isPressed) {
-      conn->sendAction(action);
-    }
+    conn->sendAction(action, isPressed);
     actionStates_[action] = isPressed;
     return;
   }
@@ -73,9 +75,7 @@ void InputHandler::handleKeyEvent(const SDL_Keycode &key, const Uint32 &event) {
   action = keyMapping2_.getAction(key);
   conn = connection2_.lock();
   if (action != Action::NONE && conn) {
-    if (isPressed) {
-      conn->sendAction(action);
-    }
+    conn->sendAction(action, isPressed);
     actionStates_[action] = isPressed;
     return;
   }

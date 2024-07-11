@@ -12,19 +12,19 @@
 
 class Connection {
 public:
-  explicit Connection(const std::function<void(Action, int)> &callbackFunc,
+  explicit Connection(const std::function<void(Action, bool, int)> &callbackFunc,
                       const Player &player, const GameState &gameState);
 
   ~Connection();
 
-  void sendAction(Action action) const;
+  void sendAction(Action action, bool isActivated) const;
 
   [[nodiscard]] constexpr int getId() const { return player_.id; }
 
   [[nodiscard]] const GameState &getStateRef() const;
 
 private:
-  std::function<void(Action, int)> callbackFunc_;
+  std::function<void(Action, bool, int)> callbackFunc_;
   /* Make player data and gamestate read-only outside of GameController class */
   /* It probably should be replaced with second callbackFunc
     (GameControler->Client communication) sending updates about game state to

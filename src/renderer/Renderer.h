@@ -13,15 +13,17 @@ class GameObject;
 
 class Renderer {
 public:
-  void update(const std::vector<const GameObject*>& objects) const;
-  Renderer();
-private:
-  void DrawObject(const GameObject* object) const;
-  SDL_Color objectColor_{255, 255, 255, 255};
-  SDL_Renderer* renderer_;
-  SDL_Window* window_;
-};
+  void update(const std::vector<const GameObject *> &objects) const;
 
+  Renderer();
+
+private:
+  void DrawObject(const GameObject *object) const;
+
+  SDL_Color objectColor_{255, 255, 255, 255};
+  SDL_Renderer *renderer_;
+  SDL_Window *window_;
+};
 
 
 #endif //RENDERER_H

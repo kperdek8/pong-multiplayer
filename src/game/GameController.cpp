@@ -20,8 +20,8 @@ std::optional<std::weak_ptr<Connection> > GameController::attach() {
   }
 
   // Bind the processAction member function to this instance
-  auto callback = [this](const Action action, const int id) {
-    this->processAction(action, id);
+  auto callback = [this](const Action action, const bool isPressed, const int id) {
+    this->processAction(action, isPressed, id);
   };
 
   // Pass assigned player as reference
@@ -46,19 +46,34 @@ void GameController::detach(const std::weak_ptr<Connection> &connection) {
   }
 }
 
-void GameController::processAction(const Action action, int id) {
-  std::cout << std::format("Connection {}: ", id);
+/* GameController receives action, alongside it's state (some actions my produce specific result on
+ deactivation) and id of connection which sent the request to manipulate correct object.
+
+ Releasing movement keys should make paddle stop, but player may do MOVE_UP action before deactivating
+ MOVE_DOWN (or vice versa) by pressing both keys at once. To fix that, deactivating MOVE_UP or MOVE_DOWN
+ sets paddle's velocity to zero ONLY IF CURRENT velocity matches action's direction. This way deactivating
+ actions whose effects were already overwritten is ignored.  */
+void GameController::processAction(const Action action, const bool isActivated, int id) {
+  std::cout << std::format("Connection [{}]: ", id);
+  std::cout << (isActivated ? "Activate " : "Deactive ");
   constexpr auto speed = Paddle::MOVESPEED;
   switch (action) {
     case Action::NONE:
       std::cout << "No Actions!" << std::endl;
+      break;
     case Action::MOVE_UP:
       std::cout << "Move up!" << std::endl;
-      gameState_.players[id].paddle.addVelocity(Vector2D{0, -speed});
+      if (isActivated)
+        gameState_.players[id].paddle.setVelocity(Vector2D{0, -speed});
+      else if (gameState_.players[id].paddle.getVelY() < 0)
+        gameState_.players[id].paddle.setVelocity(Vector2D{0, 0});
       break;
     case Action::MOVE_DOWN:
       std::cout << "Move down!" << std::endl;
-      gameState_.players[id].paddle.addVelocity(Vector2D{0, speed});
+      if (isActivated)
+        gameState_.players[id].paddle.setVelocity(Vector2D{0, speed});
+      else if (gameState_.players[id].paddle.getVelY() > 0)
+        gameState_.players[id].paddle.setVelocity(Vector2D{0, 0});
       break;
     case Action::PAUSE:
       std::cout << "Pause" << std::endl;
