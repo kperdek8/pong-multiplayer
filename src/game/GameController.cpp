@@ -80,6 +80,8 @@ void GameController::processAction(const Action action, const bool isActivated, 
       break;
     case Action::START:
       std::cout << "Start" << std::endl;
+      if(gameState_.ball.isStopped() && gameState_.lastGoal == static_cast<Side>(id))
+        gameState_.ball.start(gameState_.lastGoal);
       break;
     case Action::QUIT:
       std::cout << "Quitting" << std::endl;
@@ -118,10 +120,14 @@ void GameController::handleBoundsCollision(GameObject &object,
         // Goal! Reset the ball and add point
         std::cout << "Goal!." << std::endl;
         ball->resetPosition();
-        if (direction & Direction::LEFT)
+        if (direction & Direction::LEFT) {
           gameState_.players[1].points += 1;
-        else
+          gameState_.lastGoal = Side::RIGHT;
+        }
+        else {
           gameState_.players[0].points += 1;
+          gameState_.lastGoal = Side::LEFT;
+        }
       } else {
         // Not a goal, bounce the ball
         std::cout << "Ball collided with bounds and bounced." << std::endl;

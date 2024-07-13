@@ -166,9 +166,11 @@ void Ball::start(const Side lastGoal) {
     velocity_.x = -INITIAL_VELOCITY * std::cos(angleDeviation);
     velocity_.y = INITIAL_VELOCITY * std::sin(angleDeviation);
   }
+  stopped_ = false;
 }
 
 void Ball::resetPosition() {
+  stopped_ = true;
   velocity_ = Vector2D{0, 0};
   position_.x = GameField::width / 2.0f;
   position_.y = GameField::height / 2.0f;

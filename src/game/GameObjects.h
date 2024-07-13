@@ -56,7 +56,7 @@ class Paddle final : public GameObject {
 public:
   static constexpr float WIDTH = 40.0f;
   static constexpr float HEIGHT = 200.0f;
-  static constexpr float MOVESPEED = 400.0f;
+  static constexpr float MOVESPEED = 500.0f;
 
   Paddle() : GameObject(WIDTH, HEIGHT) {
   }
@@ -82,16 +82,16 @@ public:
 
   Ball()
     : GameObject(WIDTH, HEIGHT), gen_{std::mt19937(std::random_device{}())} {
-    angleDist_ = std::uniform_real_distribution<float>(
-                                                       -MAX_ANGLE * M_PI / 180.0f, MAX_ANGLE * M_PI / 180.0f);
+    angleDist_ = std::uniform_real_distribution<float>(-MAX_ANGLE * M_PI / 180.0f, MAX_ANGLE * M_PI / 180.0f);
   }
 
   Ball(const float x, const float y)
     : GameObject(WIDTH, HEIGHT, x, y),
       gen_{std::mt19937(std::random_device{}())} {
-    angleDist_ = std::uniform_real_distribution<float>(
-                                                       -MAX_ANGLE * M_PI / 180.0f, MAX_ANGLE * M_PI / 180.0f);
+    angleDist_ = std::uniform_real_distribution<float>(-MAX_ANGLE * M_PI / 180.0f, MAX_ANGLE * M_PI / 180.0f);
   }
+
+  [[nodiscard]] bool isStopped() const { return stopped_; }
 
   void bounce(Direction direction);
 
@@ -103,6 +103,7 @@ private:
   // For random angle in start() method
   std::mt19937 gen_;
   std::uniform_real_distribution<float> angleDist_;
+  bool stopped_ = true;
 };
 
 struct Player {

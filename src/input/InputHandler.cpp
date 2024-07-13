@@ -88,7 +88,6 @@ void InputHandler::handleKeyEvent(const SDL_KeyboardEvent &event) {
   if (action != Action::NONE && conn) {
     conn->sendAction(action, isPressed);
     actionStates_[action] = isPressed;
-    return;
   }
 
   // Check pressed key matches second player key mappings
@@ -97,7 +96,6 @@ void InputHandler::handleKeyEvent(const SDL_KeyboardEvent &event) {
   if (action != Action::NONE && conn) {
     conn->sendAction(action, isPressed);
     actionStates_[action] = isPressed;
-    return;
   }
 }
 
