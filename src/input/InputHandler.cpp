@@ -4,6 +4,7 @@
 
 #include "InputHandler.h"
 
+#include <format>
 #include <iostream>
 #include <utility>
 #include <ranges>
@@ -25,18 +26,25 @@ InputHandler::InputHandler(std::weak_ptr<Connection> connection1, std::weak_ptr<
 void InputHandler::handleInput() {
   SDL_Event event;
   while (SDL_PollEvent(&event)) {
-    auto key = event.key.key;
-    auto eventType = event.type;
     switch (event.type) {
       case SDL_EVENT_KEY_DOWN:
-        handleKeyEvent(key, eventType);
+        handleKeyEvent(event.key);
         break;
       case SDL_EVENT_KEY_UP:
-        handleKeyEvent(key, eventType);
+        handleKeyEvent(event.key);
+        break;
+      case SDL_EVENT_MOUSE_BUTTON_DOWN:
+        handleMouseButtonEvent(event.button);
+        break;
+      case SDL_EVENT_MOUSE_BUTTON_UP:
+        handleMouseButtonEvent(event.button);
+      break;
+      case SDL_EVENT_MOUSE_MOTION:
+        handleMouseMotionEvent(event.motion);
         break;
       case SDL_EVENT_QUIT:
         handleQuitEvent();
-        break;
+      break;
     }
   }
 }
@@ -57,13 +65,25 @@ bool InputHandler::isActionTriggered(const Action action) const {
   return false;
 }
 
-void InputHandler::handleKeyEvent(const SDL_Keycode &key, const Uint32 &event) {
-  std::cout << "Handling key: " << key << " Event: " << event << std::endl;
-  bool isPressed = (event == SDL_EVENT_KEY_DOWN);
-  keyStates_[key] = isPressed;
+void InputHandler::handleMouseMotionEvent(const SDL_MouseMotionEvent &event) {
+  //std::cout << std::format("Handling mouse motion x: {}, y: {}", event.x, event.y)<< std::endl;
+  mousePos_.x = event.x;
+  mousePos_.y = event.y;
+}
+
+void InputHandler::handleMouseButtonEvent(const SDL_MouseButtonEvent &event) {
+  std::cout << "Handling mouse button: " << static_cast<int>(event.button) << " Event: " << event.type << std::endl;
+  bool isPressed = (event.type == SDL_EVENT_MOUSE_BUTTON_DOWN);
+  buttonStates_[event.button] = isPressed;
+}
+
+void InputHandler::handleKeyEvent(const SDL_KeyboardEvent &event) {
+  std::cout << "Handling key: " << event.key << " Event: " << event.type << std::endl;
+  bool isPressed = (event.type == SDL_EVENT_KEY_DOWN);
+  keyStates_[event.key] = isPressed;
 
   // Check pressed key matches first player key mappings
-  Action action = keyMapping1_.getAction(key);
+  Action action = keyMapping1_.getAction(event.key);
   std::shared_ptr<Connection> conn = connection1_.lock();
   if (action != Action::NONE && conn) {
     conn->sendAction(action, isPressed);
@@ -72,7 +92,7 @@ void InputHandler::handleKeyEvent(const SDL_Keycode &key, const Uint32 &event) {
   }
 
   // Check pressed key matches second player key mappings
-  action = keyMapping2_.getAction(key);
+  action = keyMapping2_.getAction(event.key);
   conn = connection2_.lock();
   if (action != Action::NONE && conn) {
     conn->sendAction(action, isPressed);

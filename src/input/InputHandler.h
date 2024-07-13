@@ -27,15 +27,21 @@ public:
   bool isActionTriggered(Action action) const;
 
 private:
-  void handleKeyEvent(const SDL_Keycode &key, const Uint32 &event); // For Uint32 reason, refer to SDL3's SDL_Event documentation
+  void handleMouseMotionEvent(const SDL_MouseMotionEvent &event);
+
+  void handleMouseButtonEvent(const SDL_MouseButtonEvent &event);
+
+  void handleKeyEvent(const SDL_KeyboardEvent &event);
 
   void handleQuitEvent();
 
+  Vector2D mousePos_;
   std::weak_ptr<Connection> connection1_;
   std::weak_ptr<Connection> connection2_;
   KeyMapping keyMapping1_;
   KeyMapping keyMapping2_;
   std::unordered_map<SDL_Keycode, bool> keyStates_;
+  std::unordered_map<Uint8, bool> buttonStates_;
   std::unordered_map<Action, bool> actionStates_;
 };
 

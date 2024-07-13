@@ -63,12 +63,12 @@ int main() {
   controller.start();
   bool running = true;
   while (running) {
-    controller.update();
-    renderer.update(gameState.getObjects());
     inputHandler.handleInput();
     if (inputHandler.isActionTriggered(Action::QUIT)) {
       running = false;
     }
+    controller.update();
+    renderer.update(gameState.getObjects());
   }
 
   return 0;

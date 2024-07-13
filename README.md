@@ -40,7 +40,7 @@ In this project I am planning to create simple Pong game and implement as many l
 2.3 **Input Handling**
 
 - [x] Implement keyboard input for paddle control.
-- [ ] Add basic mouse input handling.
+- [x] Add basic mouse input handling.
 
 ### 3. Multithreading
 
