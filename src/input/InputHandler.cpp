@@ -22,7 +22,6 @@ InputHandler::InputHandler(std::weak_ptr<Connection> connection1, std::weak_ptr<
   }
 }
 
-// TODO: Improve input handling. Some inputs are lost by this function, maybe caused by application being single thread.
 void InputHandler::handleInput() {
   SDL_Event event;
   while (SDL_PollEvent(&event)) {

@@ -20,6 +20,11 @@ public:
 private:
   void DrawObject(const GameObject *object) const;
 
+  void PrintFPS() const;
+
+  void CapFPS(int desiredFPS) const;
+
+  const int MAX_FPS = 480;
   SDL_Color objectColor_{255, 255, 255, 255};
   SDL_Renderer *renderer_;
   SDL_Window *window_;
