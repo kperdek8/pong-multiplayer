@@ -192,5 +192,4 @@ void GameController::update() {
 void GameController::start() {
   gameStarted_ = true;
   lastFrame_ = std::chrono::high_resolution_clock::now();
-  gameState_.ball.start(gameState_.lastGoal);
 }

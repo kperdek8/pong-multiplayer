@@ -6,6 +6,7 @@
 #include "../game/GameObjects.h"
 
 #include <SDL3/SDL.h>
+#include <SDL3/SDL_render.h>
 #include <iostream>
 
 static constexpr std::string TITLE = "Pong";
@@ -16,7 +17,7 @@ Renderer::Renderer() {
   if (SDL_Init(SDL_INIT_VIDEO) < 0) {
     std::cerr << "Failed to initialize SDL: " << SDL_GetError() << std::endl;
   }
-  window_ = SDL_CreateWindow(TITLE.c_str(), WIDTH, HEIGHT, SDL_WINDOW_OPENGL | SDL_WINDOW_FULLSCREEN);
+  window_ = SDL_CreateWindow(TITLE.c_str(), WIDTH, HEIGHT, SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE);
   if (!window_) {
     std::cerr << "Failed to create window: " << SDL_GetError() << std::endl;
     SDL_Quit();
@@ -27,13 +28,28 @@ Renderer::Renderer() {
     SDL_DestroyWindow(window_);
     SDL_Quit();
   }
+
+  SDL_GetRenderOutputSize(renderer_, &windowWidth_, &windowHeight_);
+  UpdateViewport();
 }
 
-void Renderer::update(const std::vector<const GameObject *> &objects) const {
+void Renderer::update(const std::vector<const GameObject *> &objects) {
+  int currentWidth, currentHeight;
+  SDL_GetRenderOutputSize(renderer_, &currentWidth, &currentHeight);
+
+  if (currentWidth != windowWidth_ || currentHeight != windowHeight_) {
+    windowWidth_ = currentWidth;
+    windowHeight_ = currentHeight;
+    UpdateViewport();
+  }
+
   SDL_SetRenderDrawColor(renderer_, 0x00, 0x00, 0x00, 0x00);
   SDL_RenderClear(renderer_);
+
+  float scale = std::min(static_cast<float>(viewport_.w) / TARGET_WIDTH, static_cast<float>(viewport_.h) / TARGET_HEIGHT);
+
   for (auto &object: objects) {
-    DrawObject(object);
+    DrawObject(object, scale);
   }
 
   SDL_RenderPresent(renderer_);
@@ -41,8 +57,13 @@ void Renderer::update(const std::vector<const GameObject *> &objects) const {
   PrintFPS();
 }
 
-void Renderer::DrawObject(const GameObject *object) const {
-  const SDL_FRect rect = {object->getX(), object->getY(), object->width, object->height};
+void Renderer::DrawObject(const GameObject *object, float scale) const {
+  const SDL_FRect rect = {
+          object->getX()*scale,
+          object->getY()*scale,
+          object->width*scale,
+          object->height*scale
+  };
   SDL_SetRenderDrawColor(renderer_, objectColor_.r, objectColor_.g, objectColor_.b, objectColor_.a);
   SDL_RenderFillRect(renderer_, &rect);
 }
@@ -55,6 +76,7 @@ void Renderer::PrintFPS() const{
   frameCount++;
 
   if (currentTime > lastTime + 1000) { // Print FPS every second
+    std::cout<<std::format("Current window size: {} x {}", windowWidth_, windowHeight_)<<std::endl;
     std::cout << "FPS: " << frameCount << std::endl;
     frameCount = 0;
     lastTime = currentTime;
@@ -71,4 +93,33 @@ void Renderer::CapFPS(const int desiredFPS) const{
   }
 
   frameStart = SDL_GetTicks();
+}
+
+void Renderer::UpdateViewport() {
+  float marginWidth = windowWidth_ * MARGIN_FACTOR;
+  float marginHeight = windowHeight_ * MARGIN_FACTOR;
+  float effectiveWidth = windowWidth_ - 2 * marginWidth;
+  float effectiveHeight = windowHeight_ - 2 * marginHeight;
+
+  float currentAspectRatio = static_cast<float>(windowWidth_) / static_cast<float>(windowHeight_);
+
+  if (currentAspectRatio > TARGET_ASPECT_RATIO) {
+      effectiveWidth = effectiveHeight * TARGET_ASPECT_RATIO;
+      marginWidth = (windowWidth_ - effectiveWidth) / 2.0f;
+  } else {
+      effectiveHeight = effectiveWidth / TARGET_ASPECT_RATIO;
+      marginHeight = (windowHeight_ - effectiveHeight) / 2.0f;
+  }
+
+  viewport_ = {
+          static_cast<int>(marginWidth),
+          static_cast<int>(marginHeight),
+          static_cast<int>(effectiveWidth),
+          static_cast<int>(effectiveHeight)
+  };
+
+  std::cout<<std::format("Viewport aspect ratio: {}", currentAspectRatio)<<std::endl;
+  std::cout<<std::format("Margin width: {} Margin height: {}", marginWidth, marginHeight)<<std::endl;
+
+  SDL_SetRenderViewport(renderer_, &viewport_);
 }
