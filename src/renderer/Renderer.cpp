@@ -37,7 +37,6 @@ void Renderer::update(const std::vector<const GameObject *> &objects) const {
   }
 
   SDL_RenderPresent(renderer_);
-  SDL_Delay(1);
   CapFPS(MAX_FPS);
   PrintFPS();
 }
