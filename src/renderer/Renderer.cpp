@@ -16,7 +16,7 @@ Renderer::Renderer() {
   if (SDL_Init(SDL_INIT_VIDEO) < 0) {
     std::cerr << "Failed to initialize SDL: " << SDL_GetError() << std::endl;
   }
-  window_ = SDL_CreateWindow(TITLE.c_str(), WIDTH, HEIGHT, SDL_WINDOW_OPENGL);
+  window_ = SDL_CreateWindow(TITLE.c_str(), WIDTH, HEIGHT, SDL_WINDOW_OPENGL | SDL_WINDOW_FULLSCREEN);
   if (!window_) {
     std::cerr << "Failed to create window: " << SDL_GetError() << std::endl;
     SDL_Quit();
@@ -30,10 +30,6 @@ Renderer::Renderer() {
 }
 
 void Renderer::update(const std::vector<const GameObject *> &objects) const {
-  SDL_Event event;
-  while (SDL_PollEvent(&event)) {
-    break;
-  }
   SDL_SetRenderDrawColor(renderer_, 0x00, 0x00, 0x00, 0x00);
   SDL_RenderClear(renderer_);
   for (auto &object: objects) {
@@ -41,6 +37,7 @@ void Renderer::update(const std::vector<const GameObject *> &objects) const {
   }
 
   SDL_RenderPresent(renderer_);
+  SDL_Delay(1);
   CapFPS(MAX_FPS);
   PrintFPS();
 }
