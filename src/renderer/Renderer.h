@@ -13,20 +13,23 @@ class GameObject;
 
 class Renderer {
 public:
-  void update(const std::vector<const GameObject *> &objects);
-
   Renderer();
+
+  void Update(const std::vector<const GameObject *> &objects);
+
+  int GetFPS();
 
 private:
   void DrawObject(const GameObject *object, float scale) const;
 
-  void PrintFPS() const;
+  void CountFPS();
 
   void CapFPS(int desiredFPS) const;
 
   void UpdateViewport();
 
-  const int MAX_FPS = 480;
+  const int MAX_FPS = 960;
+  int currentFps_ = 0;
 
   int windowWidth_{0};
   int windowHeight_{0};

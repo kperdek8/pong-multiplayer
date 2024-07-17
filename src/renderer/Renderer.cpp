@@ -33,7 +33,7 @@ Renderer::Renderer() {
   UpdateViewport();
 }
 
-void Renderer::update(const std::vector<const GameObject *> &objects) {
+void Renderer::Update(const std::vector<const GameObject *> &objects) {
   int currentWidth, currentHeight;
   SDL_GetRenderOutputSize(renderer_, &currentWidth, &currentHeight);
 
@@ -54,7 +54,7 @@ void Renderer::update(const std::vector<const GameObject *> &objects) {
 
   SDL_RenderPresent(renderer_);
   CapFPS(MAX_FPS);
-  PrintFPS();
+  CountFPS();
 }
 
 void Renderer::DrawObject(const GameObject *object, float scale) const {
@@ -68,16 +68,19 @@ void Renderer::DrawObject(const GameObject *object, float scale) const {
   SDL_RenderFillRect(renderer_, &rect);
 }
 
-void Renderer::PrintFPS() const{
+int Renderer::GetFPS() {
+  return currentFps_;
+}
+
+void Renderer::CountFPS() {
   static Uint32 lastTime = 0;
   static int frameCount = 0;
 
   const Uint32 currentTime = SDL_GetTicks();
   frameCount++;
 
-  if (currentTime > lastTime + 1000) { // Print FPS every second
-    std::cout<<std::format("Current window size: {} x {}", windowWidth_, windowHeight_)<<std::endl;
-    std::cout << "FPS: " << frameCount << std::endl;
+  if (currentTime > lastTime + 1000) { // Update FPS every second
+    currentFps_ = frameCount;
     frameCount = 0;
     lastTime = currentTime;
   }
@@ -118,8 +121,9 @@ void Renderer::UpdateViewport() {
           static_cast<int>(effectiveHeight)
   };
 
-  std::cout<<std::format("Viewport aspect ratio: {}", currentAspectRatio)<<std::endl;
-  std::cout<<std::format("Margin width: {} Margin height: {}", marginWidth, marginHeight)<<std::endl;
+  //std::cout<<std::format("Viewport aspect ratio: {}", currentAspectRatio)<<std::endl;
+  //std::cout<<std::format("Margin width: {} Margin height: {}", marginWidth, marginHeight)<<std::endl;
 
   SDL_SetRenderViewport(renderer_, &viewport_);
 }
+

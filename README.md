@@ -46,7 +46,7 @@ In this project I am planning to create simple Pong game and implement as many l
 
 3.1 **Multithreading Basics**
 
-- [ ] Separate game logic and rendering into different threads.
+- [x] Separate game logic, input handling and rendering into different threads.
 
 ### 4. Networking and Multiplayer
 
