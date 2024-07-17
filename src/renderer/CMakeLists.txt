@@ -4,8 +4,6 @@ set(RENDERER_SOURCES
 
 set(RENDERER_HEADERS
     Renderer.h
-    ../input/KeyMapping.cpp
-    ../input/KeyMapping.h
 )
 
 add_library(RenderLib ${RENDERER_SOURCES} ${RENDERER_HEADERS})
