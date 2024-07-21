@@ -26,27 +26,18 @@ const KeyMapping player2_keys = {
 
 // TODO: Add unit tests for Input Handler
 
-void gameLogic(bool& running, GameController& gameController) {
+void gameLogic(const volatile bool &running, GameController &gameController) {
   gameController.start();
-  while(running)
+  while (running)
     gameController.update();
 }
 
-void input(bool& running, InputHandler& inputHandler) {
-  while(running) {
-    inputHandler.handleInput();
-    if (inputHandler.isActionTriggered(Action::QUIT)) {
-      running = false;
-    }
-  }
-}
-
-void debug(bool& running, Renderer& renderer) {
+void debug(const volatile bool &running, Renderer &renderer) {
   int lastFps = -1;
   while (running) {
     int fps = renderer.GetFPS();
-    if(fps != lastFps) {
-      std::cout<<"FPS: "<<fps<<std::endl;
+    if (fps != lastFps) {
+      std::cout << "FPS: " << fps << std::endl;
       lastFps = fps;
     }
   }
@@ -87,16 +78,17 @@ int main() {
 
   InputHandler inputHandler{connection1, connection2, player1_keys, player2_keys};
   bool running = true;
-
   std::thread gameLogicThread(gameLogic, std::ref(running), std::ref(controller));
-  std::thread inputThread(input, std::ref(running), std::ref(inputHandler));
   std::thread debugThread(debug, std::ref(running), std::ref(renderer));
 
   while (running) {
     renderer.Update(gameState.getObjects());
+    inputHandler.handleInput();
+    if (inputHandler.isActionTriggered(Action::QUIT)) {
+      running = false;
+    }
   }
 
-  inputThread.join();
   gameLogicThread.join();
   debugThread.join();
 
