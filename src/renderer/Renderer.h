@@ -17,6 +17,8 @@ public:
 
   void Update(const std::vector<const GameObject *> &objects);
 
+  void UpdateViewport();
+
   int GetFPS();
 
 private:
@@ -25,8 +27,6 @@ private:
   void CountFPS();
 
   void CapFPS(int desiredFPS) const;
-
-  void UpdateViewport();
 
   const int MAX_FPS = 960;
   int currentFps_ = 0;

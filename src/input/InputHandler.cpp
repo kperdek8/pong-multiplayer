@@ -37,15 +37,22 @@ void InputHandler::handleInput() {
         break;
       case SDL_EVENT_MOUSE_BUTTON_UP:
         handleMouseButtonEvent(event.button);
-      break;
+        break;
       case SDL_EVENT_MOUSE_MOTION:
         handleMouseMotionEvent(event.motion);
         break;
       case SDL_EVENT_QUIT:
         handleQuitEvent();
-      break;
+        break;
+      case SDL_EVENT_WINDOW_RESIZED:
+        handleResizeEvent();
+        break;
     }
   }
+}
+
+void InputHandler::attach(Renderer* renderer) {
+  renderer_ = renderer;
 }
 
 bool InputHandler::isKeyPressed(const SDL_Keycode key) const {
@@ -100,4 +107,9 @@ void InputHandler::handleKeyEvent(const SDL_KeyboardEvent &event) {
 
 void InputHandler::handleQuitEvent() {
   actionStates_[Action::QUIT] = true;
+}
+
+void InputHandler::handleResizeEvent() const {
+  if(renderer_)
+    renderer_->UpdateViewport();
 }

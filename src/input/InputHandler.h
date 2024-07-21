@@ -12,6 +12,7 @@
 #include "KeyMapping.h"
 #include "SDL3/SDL.h"
 #include "../game/Action.h"
+#include "../renderer/Renderer.h"
 
 class InputHandler {
 public:
@@ -21,6 +22,8 @@ public:
                         KeyMapping keyMapping2 = KeyMapping());
 
   void handleInput();
+
+  void attach(Renderer* renderer);
 
   bool isKeyPressed(SDL_Keycode key) const;
 
@@ -34,6 +37,10 @@ private:
   void handleKeyEvent(const SDL_KeyboardEvent &event);
 
   void handleQuitEvent();
+
+  void handleResizeEvent() const;
+
+  Renderer* renderer_ = nullptr;
 
   Vector2D mousePos_;
   std::weak_ptr<Connection> connection1_;

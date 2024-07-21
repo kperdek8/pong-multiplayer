@@ -77,6 +77,8 @@ int main() {
   const GameState &gameState = connection1->getStateRef();
 
   InputHandler inputHandler{connection1, connection2, player1_keys, player2_keys};
+  inputHandler.attach(&renderer);
+
   bool running = true;
   std::thread gameLogicThread(gameLogic, std::ref(running), std::ref(controller));
   std::thread debugThread(debug, std::ref(running), std::ref(renderer));
