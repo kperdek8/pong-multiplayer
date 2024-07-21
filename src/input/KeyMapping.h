@@ -23,8 +23,6 @@ public:
 
   const std::unordered_map<SDL_Keycode, Action>& getKeyMappings() const;
 
-  Action find(SDL_Keycode key) const;
-
 private:
   std::unordered_map<SDL_Keycode, Action> keyMappings;
 };
