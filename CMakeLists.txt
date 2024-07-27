@@ -36,6 +36,5 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(asio)
 include_directories(${asio_SOURCE_DIR}/asio/include)
 
-
 add_subdirectory(src)
 add_subdirectory(tests)

@@ -12,7 +12,7 @@
 #include <optional>
 
 #include "Action.h"
-#include "Connection.h"
+#include "../networking/Connection.h"
 #include "GameField.h"
 #include "GameObjects.h"
 #include "GameState.h"

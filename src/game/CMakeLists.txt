@@ -1,14 +1,12 @@
 set(GAME_SOURCES
     GameController.cpp
     GameObjects.cpp
-    Connection.cpp
     GameState.cpp
 )
 
 set(GAME_HEADERS
     GameController.h
     GameObjects.h
-    Connection.h
     Action.h
     GameState.h
     Direction.h

@@ -1,7 +1,4 @@
-add_executable(pong app.cpp)
+add_executable(pong network_main.cpp)
 
 target_link_libraries(pong PRIVATE
-                      GameLib
-                      RenderLib
-                      InputLib
                       NetworkLib)

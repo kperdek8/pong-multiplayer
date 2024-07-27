@@ -8,7 +8,7 @@
 #include <memory>
 #include <unordered_map>
 
-#include "Connection.h"
+#include "../networking/Connection.h"
 #include "KeyMapping.h"
 #include "SDL3/SDL.h"
 #include "../game/Action.h"

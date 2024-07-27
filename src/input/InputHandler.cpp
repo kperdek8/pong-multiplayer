@@ -51,7 +51,7 @@ void InputHandler::handleInput() {
   }
 }
 
-void InputHandler::attach(Renderer* renderer) {
+void InputHandler::attach(Renderer *renderer) {
   renderer_ = renderer;
 }
 
@@ -110,6 +110,6 @@ void InputHandler::handleQuitEvent() {
 }
 
 void InputHandler::handleResizeEvent() const {
-  if(renderer_)
+  if (renderer_)
     renderer_->UpdateViewport();
 }

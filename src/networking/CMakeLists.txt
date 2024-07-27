@@ -1,11 +1,14 @@
 set(NETWORK_SOURCES
     NetworkServer.cpp
     NetworkClient.cpp
+    Connection.cpp
 )
 
 set(NETWORK_HEADERS
     NetworkServer.h
     NetworkClient.h
+    Connection.h
+    Data.h
 )
 
 add_library(NetworkLib ${NETWORK_SOURCES} ${NETWORK_HEADERS})
