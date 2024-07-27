@@ -26,6 +26,7 @@ private:
   asio::io_context& io_context_;
   tcp::acceptor acceptor_;
   std::vector<std::shared_ptr<Connection>> connections_;
+  std::vector<tcp::socket> sockets_;
 };
 
 

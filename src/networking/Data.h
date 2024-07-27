@@ -11,15 +11,15 @@
 
 class Data {
 public:
-  explicit Data(Action &action, bool pressed) {
+  Data(Action &action, bool pressed) {
     data_ = std::bitset<8>(0b11001100); // testing
   }
 
-  explicit Data(GameState &gameState) {
+  Data(GameState &gameState) {
     data_ = std::bitset<8>(0b11001100); // testing
   }
 
-  explicit Data(const std::string &data) {
+  Data(const std::string &data) {
     data_ = std::bitset<8>(data); // testing
   }
 

@@ -7,7 +7,8 @@
 #include <iostream>
 
 void NetworkServer::StartAccept()  {
-  tcp::socket socket{io_context_};
+  sockets_.emplace_back(io_context_);
+  tcp::socket& socket = sockets_.front();
   acceptor_.async_accept(socket,
       [this, &socket](const std::error_code& error) {
         HandleAccept(socket, error);
@@ -26,6 +27,7 @@ void NetworkServer::HandleAccept(tcp::socket& socket, const std::error_code& err
   }
 
   // Start accepting the next connection
+  connections_.front()->send(std::string("00001111"));
   StartAccept();
 }
 
