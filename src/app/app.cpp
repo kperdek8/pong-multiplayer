@@ -7,6 +7,7 @@
 #include "KeyMapping.h"
 #include "Action.h"
 #include "SDL3/SDL_keycode.h"
+#include "NetworkClient.h"
 
 const KeyMapping player1_keys = {
   std::pair(SDLK_W, Action::MOVE_UP),

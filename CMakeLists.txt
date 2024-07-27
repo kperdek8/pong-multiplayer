@@ -38,3 +38,12 @@ include_directories(${asio_SOURCE_DIR}/asio/include)
 
 add_subdirectory(src)
 add_subdirectory(tests)
+
+# Add ASIO compile definitions
+target_compile_definitions(pong PRIVATE ASIO_STANDALONE ASIO_SEPARATE_COMPILATION)
+
+
+# Link against system libraries
+if(WIN32)
+  target_link_libraries(pong PRIVATE ws2_32 mswsock bcrypt)
+endif()
