@@ -4,18 +4,12 @@
 
 #include <iostream>
 
-#include "NetworkServer.h"
+#include "SDL3_net/SDL_net.h"
+#include "SDL3/SDL.h"
 
 int main() {
-  try
-  {
-    asio::io_context io_context;
-    NetworkServer server(io_context, 4444);
-    io_context.run();
-  }
-  catch (std::exception& e)
-  {
-    std::cerr << e.what() << std::endl;
-  }
+  SDL_Init(SDL_INIT_VIDEO);
+  SDLNet_Init();
+  std::cout<<"Test"<<std::endl;
   return 0;
 }

@@ -8,7 +8,6 @@
 #include "Data.h"
 #include <functional>
 #include <memory>
-#include <asio.hpp>
 
 class Connection : public std::enable_shared_from_this<Connection> {
 public:

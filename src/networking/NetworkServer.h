@@ -5,28 +5,23 @@
 #ifndef NETWORKSERVER_H
 #define NETWORKSERVER_H
 
+#include <SDL3_net/SDL_net.h>
 #include "Connection.h"
-#include <asio.hpp>
-
-using namespace asio::ip;
 
 class NetworkServer {
 public:
-  NetworkServer(asio::io_context &io_context, short port)
-    : io_context_(io_context),
-      acceptor_(io_context, tcp::endpoint(tcp::v4(), port)) {
-    StartAccept();
-  };
+  explicit NetworkServer(Uint16 port);
+  ~NetworkServer();
 
 private:
-  void StartAccept();
-  void HandleAccept(tcp::socket& socket, const std::error_code& error);
-  static void SendData(tcp::socket& socket, const Data& data) ;
-  static void RecvData(tcp::socket& socket);
-  asio::io_context& io_context_;
-  tcp::acceptor acceptor_;
+  void Listen();
+  void HandleAccept(SDLNet_StreamSocket* client);
+  static void SendData(SDLNet_StreamSocket* client, const Data& data);
+  static void RecvData(SDLNet_StreamSocket* client);
+  Uint16 port_;
+  SDLNet_Server* server_;
   std::vector<std::shared_ptr<Connection>> connections_;
-  std::vector<tcp::socket> sockets_;
+  std::vector<SDLNet_StreamSocket*> sockets_;
 };
 
 
