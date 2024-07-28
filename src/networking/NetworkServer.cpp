@@ -35,6 +35,7 @@ void NetworkServer::Listen()  {
     SDLNet_AcceptClient(server_, &client);
     if (client) {
       HandleAccept(client);
+      SendData(client, std::string("test"));
     }
     SDL_Delay(100); // Small delay to avoid busy waiting
   }

@@ -12,9 +12,9 @@ class NetworkServer {
 public:
   explicit NetworkServer(Uint16 port);
   ~NetworkServer();
+  void Listen();
 
 private:
-  void Listen();
   void HandleAccept(SDLNet_StreamSocket* client);
   static void SendData(SDLNet_StreamSocket* client, const Data& data);
   static void RecvData(SDLNet_StreamSocket* client);
