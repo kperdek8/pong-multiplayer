@@ -52,7 +52,7 @@ In this project I am planning to create simple Pong game and implement as many l
 
 4.1 **Basic Networking**
 
-- [ ] Set up server-client architecture.
+- [x] Set up server-client architecture.
 - [ ] Implement basic data transmission for game state.
 
 ### 5. Gameplay Enhancement

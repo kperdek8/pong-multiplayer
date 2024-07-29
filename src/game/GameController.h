@@ -17,6 +17,8 @@
 #include "GameObjects.h"
 #include "GameState.h"
 
+// TODO: Fix usage of refactored Connection class and implement server/client/local mode
+
 class GameController {
 public:
   GameController()
