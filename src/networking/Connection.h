@@ -9,6 +9,8 @@
 #include <functional>
 #include <memory>
 
+//TODO: Check if changing Data into Data& is possible without breaking NetworkClient and NetworkServer
+
 class Connection : public std::enable_shared_from_this<Connection> {
 public:
   static std::shared_ptr<Connection> create(const std::function<void(Data)> &sendFunc,

@@ -7,7 +7,7 @@
 #include "KeyMapping.h"
 #include "Action.h"
 #include "SDL3/SDL_keycode.h"
-#include "NetworkClient.h"
+#include "ConnectionType.h"
 
 const KeyMapping player1_keys = {
   std::pair(SDLK_W, Action::MOVE_UP),
@@ -29,8 +29,9 @@ const KeyMapping player2_keys = {
 
 void gameLogic(const volatile bool &running, GameController &gameController) {
   gameController.start();
-  while (running)
+  while (running) {
     gameController.update();
+  }
 }
 
 void debug(const volatile bool &running, Renderer &renderer) {
@@ -45,18 +46,18 @@ void debug(const volatile bool &running, Renderer &renderer) {
 }
 
 int main() {
-  GameController controller;
+  GameController controller(ConnectionType::LOCAL);
   Renderer renderer;
 
   // Attach the first connection
-  std::optional<std::weak_ptr<Connection> > optConnection1 = controller.attach();
+  std::optional<std::weak_ptr<Connection> > optConnection1 = controller.attachLocally();
   if (!optConnection1) {
     std::cerr << "Failed to attach first connection" << std::endl;
     return 1;
   }
 
   // Attach the second connection
-  std::optional<std::weak_ptr<Connection> > optConnection2 = controller.attach();
+  std::optional<std::weak_ptr<Connection> > optConnection2 = controller.attachLocally();
   if (!optConnection2) {
     std::cerr << "Failed to attach second connection" << std::endl;
     return 1;
@@ -75,12 +76,12 @@ int main() {
     std::cerr << "Failed to lock second connection" << std::endl;
     return 1;
   }
-  const GameState &gameState = connection1->getStateRef();
 
   InputHandler inputHandler{connection1, connection2, player1_keys, player2_keys};
   inputHandler.attach(&renderer);
 
   bool running = true;
+  GameState &gameState = controller.getGameState();
   std::thread gameLogicThread(gameLogic, std::ref(running), std::ref(controller));
   std::thread debugThread(debug, std::ref(running), std::ref(renderer));
 

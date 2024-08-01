@@ -35,6 +35,13 @@ Renderer::Renderer() {
 }
 
 void Renderer::Update(const std::vector<const GameObject *> &objects) {
+  SDL_Event event;
+  while (SDL_PollEvent(&event)) {
+    switch (event.type) {
+      default:
+        break;
+    }
+  }
   SDL_SetRenderDrawColor(renderer_, 0x00, 0x00, 0x00, 0x00);
   SDL_RenderClear(renderer_);
 

@@ -9,10 +9,10 @@ struct Vector2D {
   float x;
   float y;
 
-  explicit Vector2D(const float x = 0.0f, const float y = 0.0f) : x(x), y(y) {}
+  Vector2D(const float x = 0.0f, const float y = 0.0f) : x(x), y(y) {}
 
   Vector2D operator+(const Vector2D &other) const {
-    return Vector2D(x + other.x, y + other.y);
+    return {x + other.x, y + other.y};
   }
 
   Vector2D &operator+=(const Vector2D &other) {
@@ -22,7 +22,7 @@ struct Vector2D {
   }
 
   Vector2D operator-(const Vector2D &other) const {
-    return Vector2D(x - other.x, y - other.y);
+    return {x - other.x, y - other.y};
   }
 
   Vector2D &operator-=(const Vector2D &other) {
@@ -32,7 +32,7 @@ struct Vector2D {
   }
 
   Vector2D operator*(const float scalar) const {
-    return Vector2D(x * scalar, y * scalar);
+    return {x * scalar, y * scalar};
   }
 
   Vector2D& operator*=(const float scalar) {

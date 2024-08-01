@@ -8,10 +8,11 @@
 #include <memory>
 #include <unordered_map>
 
-#include "../networking/Connection.h"
 #include "KeyMapping.h"
 #include "SDL3/SDL.h"
+#include "Vector2D.h"
 #include "../game/Action.h"
+#include "../networking/Connection.h"
 #include "../renderer/Renderer.h"
 
 class InputHandler {

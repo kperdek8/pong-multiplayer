@@ -24,6 +24,7 @@ InputHandler::InputHandler(std::weak_ptr<Connection> connection1, std::weak_ptr<
 
 void InputHandler::handleInput() {
   SDL_Event event;
+
   while (SDL_PollEvent(&event)) {
     switch (event.type) {
       case SDL_EVENT_KEY_DOWN:
@@ -92,7 +93,7 @@ void InputHandler::handleKeyEvent(const SDL_KeyboardEvent &event) {
   Action action = keyMapping1_.getAction(event.key);
   std::shared_ptr<Connection> conn = connection1_.lock();
   if (action != Action::NONE && conn) {
-    conn->sendAction(action, isPressed);
+    conn->send(Data(action, isPressed));
     actionStates_[action] = isPressed;
   }
 
@@ -100,7 +101,7 @@ void InputHandler::handleKeyEvent(const SDL_KeyboardEvent &event) {
   action = keyMapping2_.getAction(event.key);
   conn = connection2_.lock();
   if (action != Action::NONE && conn) {
-    conn->sendAction(action, isPressed);
+    conn->send(Data(action, isPressed));
     actionStates_[action] = isPressed;
   }
 }

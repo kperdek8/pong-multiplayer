@@ -8,48 +8,36 @@
 #include <format>
 #include <iostream>
 
-std::optional<std::weak_ptr<Connection> > GameController::attach() {
-  // Check if there is empty connection slot
-  const auto it = std::ranges::find_if(
-                                       connections_, [](const auto &conn) { return conn == nullptr; });
+std::optional<std::weak_ptr<Connection>> GameController::attachLocally() {
+  const int connectionId = networkManager_.isConnectionAvailable();
 
   // Reject connection if all slots are taken
-  if (it == connections_.end()) {
+  if (connectionId < 0) {
     std::cout << "New connection rejected" << std::endl;
     return std::nullopt;
   }
 
-  // Bind the processAction member function to this instance
-  auto callback = [this](const Action action, const bool isPressed, const int id) {
-    this->processAction(action, isPressed, id);
+  // Prepare callback function for new connection to send data
+  auto sendCallback = [this, connectionId](const Data& data) {
+    auto [action, pressed] = data.readAction();
+    this->processAction(action, pressed, connectionId);
   };
 
-  // Pass assigned player as reference
-  const auto playerId = std::distance(connections_.begin(), it);
-  Player &player = gameState_.players[playerId];
+  // Prepare callback function for new connection to receive date (locally it's gamestate reference)
+  auto recvCallback = [this]() {
+    return gameState_;
+  };
 
-  *it = std::make_shared<Connection>(callback, player, gameState_);
-  return std::weak_ptr(*it);
-}
+  auto it = Connection::create(sendCallback, recvCallback);
+  networkManager_.attach(it);
 
-void GameController::detach(const std::weak_ptr<Connection> &connection) {
-  if (const auto shared_conn = connection.lock()) {
-    auto it = std::ranges::find_if(connections_, [&](const auto &conn) {
-      return conn && conn->getId() == shared_conn->getId();
-    });
-
-    if (it != connections_.end()) {
-      it->reset();
-      std::cout << std::format("Connection {} detached", shared_conn->getId())
-          << std::endl;
-    }
-  }
+  return std::weak_ptr(it);
 }
 
 /* GameController receives action, alongside it's state (some actions my produce specific result on
  deactivation) and id of connection which sent the request to manipulate correct object.
 
- Releasing movement keys should make paddle stop, but player may do MOVE_UP action before deactivating
+ Releasing movement keys should make paddle stop, but player may send MOVE_UP action before deactivating
  MOVE_DOWN (or vice versa) by pressing both keys at once. To fix that, deactivating MOVE_UP or MOVE_DOWN
  sets paddle's velocity to zero ONLY IF CURRENT velocity matches action's direction. This way deactivating
  actions whose effects were already overwritten is ignored.  */
@@ -80,7 +68,7 @@ void GameController::processAction(const Action action, const bool isActivated, 
       break;
     case Action::START:
       std::cout << "Start" << std::endl;
-      if(gameState_.ball.isStopped() && gameState_.lastGoal == static_cast<Side>(id))
+      if (gameState_.ball.isStopped() && gameState_.lastGoal == static_cast<Side>(id))
         gameState_.ball.start(gameState_.lastGoal);
       break;
     case Action::QUIT:
@@ -89,16 +77,8 @@ void GameController::processAction(const Action action, const bool isActivated, 
   }
 }
 
-std::size_t GameController::getConnectionCount() {
-  const auto connections = std::ranges::count_if(
-                                                 connections_, [](const auto &conn) { return conn != nullptr; });
-  return connections;
-}
-
-bool GameController::isConnectionAvailable() {
-  const auto it = std::ranges::find_if(
-                                       connections_, [](const auto &conn) { return conn == nullptr; });
-  return it != connections_.end();
+GameState& GameController::getGameState() {
+  return gameState_;
 }
 
 void GameController::handleBoundsCollision(GameObject &object,
@@ -123,8 +103,7 @@ void GameController::handleBoundsCollision(GameObject &object,
         if (direction & Direction::LEFT) {
           gameState_.players[1].points += 1;
           gameState_.lastGoal = Side::RIGHT;
-        }
-        else {
+        } else {
           gameState_.players[0].points += 1;
           gameState_.lastGoal = Side::LEFT;
         }

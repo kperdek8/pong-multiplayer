@@ -2,6 +2,7 @@ set(NETWORK_SOURCES
     NetworkServer.cpp
     NetworkClient.cpp
     Connection.cpp
+    NetworkManager.cpp
 )
 
 set(NETWORK_HEADERS
@@ -9,6 +10,8 @@ set(NETWORK_HEADERS
     NetworkClient.h
     Connection.h
     Data.h
+    NetworkManager.h
+    ConnectionType.h
 )
 
 add_library(NetworkLib ${NETWORK_SOURCES} ${NETWORK_HEADERS})

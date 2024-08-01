@@ -5,18 +5,21 @@
 #ifndef DATA_H
 #define DATA_H
 
+#include <bitset>
+#include "../game/Action.h"
 #include "../game/GameState.h"
 #include "../game/Action.h"
-#include <bitset>
 
 class Data {
 public:
-  Data(Action &action, bool pressed) {
-    data_ = std::bitset<8>(0b11001100); // testing
+  Data(const Action action, const bool pressed) {
+    //data_ = std::bitset<8>(0b11001100); // testing
+    action_ = action;
+    pressed_ = pressed;
   }
 
-  Data(GameState &gameState) {
-    data_ = std::bitset<8>(0b11001100); // testing
+  Data(GameState* gameState) : gameState_(gameState){
+    //data_ = std::bitset<8>(0b11001100); // testing
   }
 
   Data(const std::string &data) {
@@ -27,8 +30,16 @@ public:
     return data_.to_string();
   }
 
+  [[nodiscard]] std::pair<Action, bool> readAction() const {
+    return {action_, pressed_}; // testing
+  }
+
 private:
   std::bitset<8> data_;
+  // For testing, before I implement bit data dictionary
+  GameState* gameState_{};
+  Action action_{};
+  bool pressed_{};
 };
 
 #endif //DATA_H
