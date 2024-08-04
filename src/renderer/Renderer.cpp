@@ -3,11 +3,11 @@
 //
 
 #include "Renderer.h"
-#include "../game/GameObjects.h"
 
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_render.h>
 #include <iostream>
+#include "../game/GameObjects.h"
 
 static constexpr std::string TITLE = "Pong";
 static constexpr uint16_t WIDTH = 1080;
@@ -68,7 +68,7 @@ void Renderer::DrawObject(const GameObject *object, const float scale) const {
   SDL_RenderFillRect(renderer_, &rect);
 }
 
-int Renderer::GetFPS() {
+int Renderer::GetFPS() const {
   return currentFps_;
 }
 

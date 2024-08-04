@@ -10,17 +10,33 @@
 
 #include "KeyMapping.h"
 #include "SDL3/SDL.h"
-#include "Vector2D.h"
-#include "../game/Action.h"
+#include "../common/Action.h"
+#include "../common/ConnectionType.h"
+#include "../common/Vector2D.h"
 #include "../networking/Connection.h"
 #include "../renderer/Renderer.h"
 
+const KeyMapping player1_keys = {
+  std::pair(SDLK_W, Action::MOVE_UP),
+  std::pair(SDLK_S, Action::MOVE_DOWN),
+  std::pair(SDLK_P, Action::PAUSE),
+  std::pair(SDLK_ESCAPE, Action::QUIT),
+  std::pair(SDLK_SPACE, Action::START)
+};
+const KeyMapping player2_keys = {
+  std::pair(SDLK_UP, Action::MOVE_UP),
+  std::pair(SDLK_DOWN, Action::MOVE_DOWN),
+//  std::pair(SDLK_P, Action::PAUSE),
+//  std::pair(SDLK_ESCAPE, Action::QUIT),
+//  std::pair(SDLK_SPACE, Action::START)
+};
+
+
 class InputHandler {
 public:
-  explicit InputHandler(std::weak_ptr<Connection> connection1 = std::weak_ptr<Connection>(),
-                        std::weak_ptr<Connection> connection2 = std::weak_ptr<Connection>(),
-                        KeyMapping keyMapping1 = KeyMapping(),
-                        KeyMapping keyMapping2 = KeyMapping());
+  explicit InputHandler(ConnectionType type,
+                        std::weak_ptr<Connection> connection1 = std::weak_ptr<Connection>(),
+                        std::weak_ptr<Connection> connection2 = std::weak_ptr<Connection>());
 
   void handleInput();
 

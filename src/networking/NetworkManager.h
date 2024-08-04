@@ -8,7 +8,7 @@
 #include <memory>
 
 #include "Connection.h"
-#include "ConnectionType.h"
+#include "../common/ConnectionType.h"
 
 class NetworkManager {
 public:

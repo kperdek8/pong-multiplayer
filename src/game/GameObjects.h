@@ -7,7 +7,7 @@
 
 #include "Direction.h"
 #include "GameField.h"
-#include "Vector2D.h"
+#include "../common/Vector2D.h"
 #include <random>
 
 enum class Side { LEFT = 0, RIGHT = 1 };

@@ -4,14 +4,12 @@
 
 #include "KeyMapping.h"
 
-// TODO: Mix specified mappings with defaults, if any action doesn't have specified key use default one.
-
 KeyMapping::KeyMapping() {
-  this->setMapping(SDLK_W, Action::MOVE_UP);
-  this->setMapping(SDLK_S, Action::MOVE_DOWN);
-  this->setMapping(SDLK_P, Action::PAUSE);
-  this->setMapping(SDLK_SPACE, Action::START);
-  this->setMapping(SDLK_BACKSPACE, Action::QUIT);
+  // this->setMapping(SDLK_W, Action::MOVE_UP);
+  // this->setMapping(SDLK_S, Action::MOVE_DOWN);
+  // this->setMapping(SDLK_P, Action::PAUSE);
+  // this->setMapping(SDLK_SPACE, Action::START);
+  // this->setMapping(SDLK_BACKSPACE, Action::QUIT);
 }
 
 KeyMapping::KeyMapping(const std::initializer_list<std::pair<SDL_Keycode, Action> > mappings) {

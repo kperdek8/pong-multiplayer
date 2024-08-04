@@ -7,7 +7,7 @@
 
 #include <SDL3/SDL.h>
 #include <unordered_map>
-#include "Action.h"
+#include "../common/Action.h"
 
 class KeyMapping {
 public:

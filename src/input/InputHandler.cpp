@@ -4,22 +4,30 @@
 
 #include "InputHandler.h"
 
+#include <cassert>
 #include <format>
 #include <iostream>
 #include <utility>
 #include <ranges>
 
-InputHandler::InputHandler(std::weak_ptr<Connection> connection1, std::weak_ptr<Connection> connection2,
-                           KeyMapping keyMapping1, KeyMapping keyMapping2)
-  : connection1_(std::move(connection1)), connection2_(std::move(connection2)), keyMapping1_(std::move(keyMapping1)),
-    keyMapping2_(std::move(keyMapping2)) {
-  // Initialize action states
+InputHandler::InputHandler(ConnectionType type, std::weak_ptr<Connection> connection1, std::weak_ptr<Connection> connection2)
+  : connection1_(std::move(connection1)), connection2_(std::move(connection2)) {
+  if(type == ConnectionType::SERVER)
+    assert(type != ConnectionType::SERVER && "InputHandler should not be created for Server conncetion type!");
+
+  keyMapping1_ = player1_keys;
+  if(type == ConnectionType::LOCAL)
+    keyMapping2_ = player2_keys;
+
+  // Initialize key states
   for (const Action &action: keyMapping1_.getKeyMappings() | std::views::values) {
     actionStates_[action] = false;
   }
-  for (const Action &action: keyMapping2_.getKeyMappings() | std::views::values) {
-    actionStates_[action] = false;
-  }
+
+  if(type == ConnectionType::LOCAL)
+    for (const Action &action: keyMapping2_.getKeyMappings() | std::views::values) {
+      actionStates_[action] = false;
+    }
 }
 
 void InputHandler::handleInput() {

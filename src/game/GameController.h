@@ -9,12 +9,12 @@
 #include <memory>
 #include <optional>
 
-#include "Action.h"
+#include "../common/Action.h"
 #include "../networking/Connection.h"
+#include "../networking/NetworkManager.h"
 #include "GameField.h"
 #include "GameObjects.h"
 #include "GameState.h"
-#include "../networking/NetworkManager.h"
 
 class GameController {
 public:

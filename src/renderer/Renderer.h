@@ -19,7 +19,7 @@ public:
 
   void UpdateViewport();
 
-  int GetFPS();
+  int GetFPS() const;
 
 private:
   void DrawObject(const GameObject *object, float scale) const;
