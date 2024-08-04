@@ -9,9 +9,7 @@ set(NETWORK_HEADERS
     NetworkServer.h
     NetworkClient.h
     Connection.h
-    Data.h
     NetworkManager.h
-    ConnectionType.h
 )
 
 add_library(NetworkLib ${NETWORK_SOURCES} ${NETWORK_HEADERS})

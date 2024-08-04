@@ -5,7 +5,7 @@
 #ifndef CONNECTION_H
 #define CONNECTION_H
 
-#include "Data.h"
+#include "../common/Data.h"
 #include <functional>
 #include <memory>
 

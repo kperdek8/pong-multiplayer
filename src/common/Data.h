@@ -6,9 +6,9 @@
 #define DATA_H
 
 #include <bitset>
-#include "../game/Action.h"
+#include "Action.h"
 #include "../game/GameState.h"
-#include "../game/Action.h"
+#include "Action.h"
 
 class Data {
 public:
