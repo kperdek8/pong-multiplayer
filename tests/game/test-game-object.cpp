@@ -3,7 +3,7 @@
 //
 #include <gtest/gtest.h>
 #include "GameField.h"
-#include "Vector2D.h"
+#include "../../src/common/Vector2D.h"
 #include "Direction.h"
 #include "GameObjects.h"
 
