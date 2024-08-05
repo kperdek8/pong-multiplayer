@@ -23,7 +23,7 @@ public:
       networkManager_(type) {
   }
 
-  std::optional<std::weak_ptr<Connection> > attachLocally();
+  std::optional<std::weak_ptr<Connection>> attachLocally();
 
   GameState &getGameState();
 

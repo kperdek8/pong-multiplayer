@@ -5,54 +5,70 @@
 
 #include <iostream>
 #include "Game.h"
+#include <cassert>
 #include "GameController.h"
 
-Game::Game(ConnectionType connectionType) : gameController_(connectionType) {
-  // Attach the first connection
-  std::optional<std::weak_ptr<Connection> > optConnection1 = gameController_.attachLocally();
-  if (!optConnection1) {
-    std::cerr << "Failed to attach first connection" << std::endl;
-    exit(1);
-  }
+void Game::initLocal() {
+  gameController_.emplace(ConnectionType::LOCAL);
+  // Attach the two local connections
+  std::optional<std::weak_ptr<Connection>> optConnection1 = gameController_->attachLocally();
+  assert(optConnection1 && "Attaching connection1 during Local game initialization should not fail!");
 
-  // Attach the second connection
-  std::optional<std::weak_ptr<Connection> > optConnection2 = gameController_.attachLocally();
-  if (!optConnection2) {
-    std::cerr << "Failed to attach second connection" << std::endl;
-    exit(1);
-  }
+  std::optional<std::weak_ptr<Connection> > optConnection2 = gameController_->attachLocally();
+  assert(optConnection2 && "Attaching connection2 during Local game initialization should not fail!");
 
-  // Lock the first connection
+  // Lock connections
   std::shared_ptr<Connection> connection1 = optConnection1->lock();
-  if (!connection1) {
-    std::cerr << "Failed to lock first connection" << std::endl;
-    exit(1);
-  }
+  assert(connection1 && "Locking connection1 during Local game initialization should not fail!");
 
-  // Lock the second connection
   std::shared_ptr<Connection> connection2 = optConnection2->lock();
-  if (!connection2) {
-    std::cerr << "Failed to lock second connection" << std::endl;
-    exit(1);
-  }
+  assert(connection1 && "Locking connection2 during Local game initialization should not fail!");
 
-  inputHandler_.emplace(InputHandler{connectionType,connection1, connection2});
-  inputHandler_->attach(&renderer_);
+  renderer_.emplace();
+  inputHandler_.emplace(InputHandler{ConnectionType::LOCAL,connection1, connection2});
+  inputHandler_->attach(&(*renderer_));
 
   running_.store(true);
-  threads_.emplace_back(&Game::gameLogic, this, std::ref(gameController_));
-  threads_.emplace_back(&Game::debug, this, std::ref(renderer_));
+  threads_.emplace_back(&Game::gameLogic, this, std::ref(*gameController_));
+  threads_.emplace_back(&Game::debug, this, std::ref(*renderer_));
   mainLoop();
+}
+
+void Game::initHost() {
+  // Implement
+}
+
+void Game::initClient() {
+  // Implement
+}
+
+void Game::initServer() {
+  // Implement
+}
+
+Game::Game(ConnectionType connectionType) {
+  switch(connectionType) {
+    case ConnectionType::LOCAL:
+      initLocal();
+      break;
+    case ConnectionType::HOST:
+      initHost();
+      break;
+    case ConnectionType::CLIENT:
+      initClient();
+      break;
+    case ConnectionType::SERVER:
+      initServer();
+      break;
+  }
 }
 
 Game::~Game() {
   stop();
   for(auto& thread : threads_) {
-    std::cout<<"C"<<std::endl;
     if(thread.joinable())
       thread.join();
   }
-  std::cout<<"D"<<std::endl;
 }
 
 void Game::gameLogic(GameController &gameController) const {
@@ -60,7 +76,6 @@ void Game::gameLogic(GameController &gameController) const {
   while (running_.load() == true) {
     gameController.update();
   }
-  std::cout<<"A"<<std::endl;
 }
 
 
@@ -73,15 +88,14 @@ void Game::debug(Renderer &renderer) const {
       lastFps = fps;
     }
   }
-  std::cout<<"B"<<std::endl;
 }
 
 
 void Game::mainLoop() {
-  GameState &gameState = gameController_.getGameState();
+  GameState &gameState = gameController_->getGameState();
 
   while (running_.load()) {
-    renderer_.Update(gameState.getObjects());
+    renderer_->Update(gameState.getObjects());
     inputHandler_->handleInput();
     if (inputHandler_->isActionTriggered(Action::QUIT)) {
       running_.store(false);
