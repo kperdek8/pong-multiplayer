@@ -25,8 +25,10 @@ void Game::initLocal() {
   assert(connection1 && "Locking connection2 during Local game initialization should not fail!");
 
   renderer_.emplace();
-  inputHandler_.emplace(InputHandler{ConnectionType::LOCAL,connection1, connection2});
-  inputHandler_->attach(&(*renderer_));
+  inputHandler_.emplace(InputHandler{ConnectionType::LOCAL});
+  inputHandler_->attachToRenderer(&(*renderer_));
+  inputHandler_->attachConnection(connection1, 0);
+  inputHandler_->attachConnection(connection2, 1);
 
   running_.store(true);
   threads_.emplace_back(&Game::gameLogic, this, std::ref(*gameController_));
@@ -35,7 +37,12 @@ void Game::initLocal() {
 }
 
 void Game::initHost() {
-  // Implement
+  // Attach first connection
+  std::optional<std::weak_ptr<Connection>> optConnection1 = gameController_->attachLocally();
+  assert(optConnection1 && "Attaching connection1 during Local game initialization should not fail!");
+  // Lock connection
+  std::shared_ptr<Connection> connection1 = optConnection1->lock();
+  assert(connection1 && "Locking connection1 during Local game initialization should not fail!");
 }
 
 void Game::initClient() {
@@ -46,7 +53,7 @@ void Game::initServer() {
   // Implement
 }
 
-Game::Game(ConnectionType connectionType) {
+Game::Game(const ConnectionType& connectionType) {
   switch(connectionType) {
     case ConnectionType::LOCAL:
       initLocal();

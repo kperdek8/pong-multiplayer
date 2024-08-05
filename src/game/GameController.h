@@ -10,6 +10,7 @@
 #include <optional>
 
 #include "../common/Action.h"
+#include "../common/ConnectionType.h"
 #include "../networking/Connection.h"
 #include "../networking/NetworkManager.h"
 #include "GameField.h"
@@ -18,12 +19,10 @@
 
 class GameController {
 public:
-  explicit GameController(const ConnectionType type)
-    : gameState_{Player{0}, Player{1}, Ball{GameField::width / 2.0f, GameField::height / 2.0f}},
-      networkManager_(type) {
-  }
+  explicit GameController(const ConnectionType& type)
+    : gameState_{Player{0}, Player{1}, Ball{GameField::width / 2.0f, GameField::height / 2.0f}} {}
 
-  std::optional<std::weak_ptr<Connection>> attachLocally();
+  std::optional<std::weak_ptr<Connection> > attachLocally();
 
   GameState &getGameState();
 

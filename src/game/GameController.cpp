@@ -8,7 +8,7 @@
 #include <format>
 #include <iostream>
 
-std::optional<std::weak_ptr<Connection>> GameController::attachLocally() {
+std::optional<std::weak_ptr<Connection> > GameController::attachLocally() {
   const int connectionId = networkManager_.isConnectionAvailable();
 
   // Reject connection if all slots are taken
@@ -18,7 +18,7 @@ std::optional<std::weak_ptr<Connection>> GameController::attachLocally() {
   }
 
   // Prepare callback function for new connection to send data
-  auto sendCallback = [this, connectionId](const Data& data) {
+  auto sendCallback = [this, connectionId](const Data &data) {
     auto [action, pressed] = data.readAction();
     this->processAction(action, pressed, connectionId);
   };
@@ -77,7 +77,7 @@ void GameController::processAction(const Action action, const bool isActivated, 
   }
 }
 
-GameState& GameController::getGameState() {
+GameState &GameController::getGameState() {
   return gameState_;
 }
 

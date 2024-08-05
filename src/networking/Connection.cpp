@@ -18,7 +18,7 @@ Connection::~Connection() {
 
 std::shared_ptr<Connection> Connection::create(const std::function<void(Data)> &sendFunc,
                                                const std::function<void()> &recvFunc) {
-  return std::shared_ptr<Connection>(new Connection(sendFunc,recvFunc));
+  return std::shared_ptr<Connection>(new Connection(sendFunc, recvFunc));
 }
 
 void Connection::send(const Data data) const {

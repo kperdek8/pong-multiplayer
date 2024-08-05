@@ -14,7 +14,7 @@
 
 class Game {
 public:
-  explicit Game(ConnectionType connectionType);
+  explicit Game(const ConnectionType& connectionType);
   ~Game();
   bool isRunning() const;
 private:
