@@ -9,15 +9,20 @@
 
 class NetworkClient {
 public:
-  NetworkClient(const char* address, Uint16 port);
+  NetworkClient(const char *address, Uint16 port);
+
   ~NetworkClient();
+
   std::shared_ptr<Connection> getConnection();
+
   void listen();
 
 private:
-  static void sendData(SDLNet_StreamSocket* client, const Data& data);
-  static void secvData(SDLNet_StreamSocket* client);
-  SDLNet_StreamSocket* socket_;
+  static void sendData(SDLNet_StreamSocket *client, const Data &data);
+
+  static void recvData(SDLNet_StreamSocket *client);
+
+  SDLNet_StreamSocket *socket_;
   std::shared_ptr<Connection> connection_;
 };
 

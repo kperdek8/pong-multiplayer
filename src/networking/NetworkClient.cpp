@@ -6,12 +6,12 @@
 
 #include <iostream>
 
-NetworkClient::NetworkClient(const char* address, Uint16 port) {
+NetworkClient::NetworkClient(const char *address, Uint16 port) {
   if (SDLNet_Init() < 0) {
     std::cerr << "SDLNet_Init error: " << SDL_GetError() << std::endl;
     exit(EXIT_FAILURE);
   }
-  SDLNet_Address* host = SDLNet_ResolveHostname(address);
+  SDLNet_Address *host = SDLNet_ResolveHostname(address);
   SDLNet_WaitUntilResolved(host, -1);
   if (SDLNet_GetAddressStatus(host) < 1) {
     std::cerr << "SDLNet_ResolveHostname error: " << SDL_GetError() << std::endl;
@@ -23,14 +23,9 @@ NetworkClient::NetworkClient(const char* address, Uint16 port) {
     std::cerr << "SDLNet_CreateClient error: " << SDL_GetError() << std::endl;
     exit(EXIT_FAILURE);
   }
-  connection_ = Connection::create(
-  [this](const Data& data) {
-    sendData(socket_, data);
-  },
-  [this]() {
-    secvData(socket_);
-  });
-  std::cout << "Connected to "<< address << " " << port << std::endl;
+  connection_ = Connection::create([this](const Data &data) { sendData(socket_, data); },
+                                   [this]() { recvData(socket_); });
+  std::cout << "Connected to " << address << " " << port << std::endl;
 }
 
 NetworkClient::~NetworkClient() {
@@ -43,12 +38,12 @@ std::shared_ptr<Connection> NetworkClient::getConnection() {
 }
 
 void NetworkClient::listen() {
-  while(true) {
-    secvData(socket_);
+  while (true) {
+    recvData(socket_);
   }
 }
 
-void NetworkClient::sendData(SDLNet_StreamSocket* client, const Data& data) {
+void NetworkClient::sendData(SDLNet_StreamSocket *client, const Data &data) {
   const std::string message = data.read();
   const int len = static_cast<int>(message.size());
   if (SDLNet_WriteToStreamSocket(client, message.c_str(), len)) {
@@ -59,7 +54,7 @@ void NetworkClient::sendData(SDLNet_StreamSocket* client, const Data& data) {
   }
 }
 
-void NetworkClient::secvData(SDLNet_StreamSocket* client) {
+void NetworkClient::recvData(SDLNet_StreamSocket *client) {
   constexpr int PACKET_SIZE = 64;
   char buffer[PACKET_SIZE];
   const int len = SDLNet_ReadFromStreamSocket(client, buffer, PACKET_SIZE);

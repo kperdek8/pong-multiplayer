@@ -18,25 +18,25 @@ NetworkServer::NetworkServer(Uint16 port) : port_(port) {
     exit(EXIT_FAILURE);
   }
 
-  std::cout << "Server started on port "<< port_ << std::endl;
+  std::cout << "Server started on port " << port_ << std::endl;
 }
 
 NetworkServer::~NetworkServer() {
-  for (auto& thread : threads_) {
-    if(thread.joinable()) {
+  for (auto &thread: threads_) {
+    if (thread.joinable()) {
       thread.join();
     }
   }
-  for (const auto socket : sockets_) {
+  for (const auto socket: sockets_) {
     SDLNet_DestroyStreamSocket(socket);
   }
   SDLNet_DestroyServer(server_);
   SDLNet_Quit();
 }
 
-void NetworkServer::listen(std::vector<std::shared_ptr<Connection>>& connections)  {
+void NetworkServer::listen(std::vector<std::shared_ptr<Connection> > &connections) {
   while (running_) {
-    SDLNet_StreamSocket* client;
+    SDLNet_StreamSocket *client;
     SDLNet_AcceptClient(server_, &client);
     if (client) {
       std::thread client_thread(&NetworkServer::handleAccept, this, client, std::ref(connections));
@@ -45,21 +45,22 @@ void NetworkServer::listen(std::vector<std::shared_ptr<Connection>>& connections
     SDL_Delay(100); // Small delay to avoid busy waiting
   }
 }
-void NetworkServer::handleAccept(SDLNet_StreamSocket* client, std::vector<std::shared_ptr<Connection>>& connections) {
+
+void NetworkServer::handleAccept(SDLNet_StreamSocket *client, std::vector<std::shared_ptr<Connection> > &connections) {
   connections.emplace_back(Connection::create(
-  [this, &client](const Data& data) {
-    sendData(client, data);
-  },
-  [this, &client]() {
-    recvData(client);
-  }));
+                                              [this, &client](const Data &data) {
+                                                sendData(client, data);
+                                              },
+                                              [this, &client]() {
+                                                recvData(client);
+                                              }));
   sockets_.push_back(client);
-  while(running_) {
+  while (running_) {
     recvData(client);
   }
 }
 
-void NetworkServer::sendData(SDLNet_StreamSocket* client, const Data& data) {
+void NetworkServer::sendData(SDLNet_StreamSocket *client, const Data &data) {
   const std::string message = data.read();
   const int len = static_cast<int>(message.size());
   if (SDLNet_WriteToStreamSocket(client, message.c_str(), len)) {
@@ -70,7 +71,7 @@ void NetworkServer::sendData(SDLNet_StreamSocket* client, const Data& data) {
   }
 }
 
-void NetworkServer::recvData(SDLNet_StreamSocket* client) {
+void NetworkServer::recvData(SDLNet_StreamSocket *client) {
   constexpr int PACKET_SIZE = 64;
   char buffer[PACKET_SIZE];
   const int len = SDLNet_ReadFromStreamSocket(client, buffer, PACKET_SIZE);

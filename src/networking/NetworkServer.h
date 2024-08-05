@@ -15,16 +15,21 @@
 class NetworkServer {
 public:
   explicit NetworkServer(Uint16 port);
+
   ~NetworkServer();
-  void listen(std::vector<std::shared_ptr<Connection>>& connections);
+
+  void listen(std::vector<std::shared_ptr<Connection> > &connections);
 
 private:
-  void handleAccept(SDLNet_StreamSocket* client, std::vector<std::shared_ptr<Connection>>& connections);
-  static void sendData(SDLNet_StreamSocket* client, const Data& data);
-  static void recvData(SDLNet_StreamSocket* client);
+  void handleAccept(SDLNet_StreamSocket *client, std::vector<std::shared_ptr<Connection> > &connections);
+
+  static void sendData(SDLNet_StreamSocket *client, const Data &data);
+
+  static void recvData(SDLNet_StreamSocket *client);
+
   Uint16 port_;
-  SDLNet_Server* server_;
-  std::vector<SDLNet_StreamSocket*> sockets_;
+  SDLNet_Server *server_;
+  std::vector<SDLNet_StreamSocket *> sockets_;
   std::vector<std::thread> threads_;
   std::atomic<bool> running_{true};
 };

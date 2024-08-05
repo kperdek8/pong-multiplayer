@@ -14,25 +14,35 @@
 
 class Game {
 public:
-  explicit Game(const ConnectionType& connectionType);
+  explicit Game(const ConnectionType &connectionType);
+
   ~Game();
+
   bool isRunning() const;
+
 private:
   void initLocal();
+
   void initHost();
+
   void initClient();
+
   void initServer();
+
   void debug(Renderer &renderer) const;
+
   void gameLogic(GameController &gameController) const;
+
   void mainLoop();
+
   void stop();
-  std::optional<Renderer> renderer_ {};           // Optional to delay initialization
-  std::optional<GameController> gameController_;  // Optional to delay initialization
-  std::optional<InputHandler> inputHandler_;      // Optional to delay initialization
+
+  std::optional<Renderer> renderer_{};           // Optional to delay initialization
+  std::optional<GameController> gameController_; // Optional to delay initialization
+  std::optional<InputHandler> inputHandler_;     // Optional to delay initialization
   std::vector<std::thread> threads_;
   std::atomic<bool> running_ = false;
 };
-
 
 
 #endif //GAME_H
