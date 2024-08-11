@@ -4,26 +4,32 @@
 
 #ifndef NETWORKMANAGER_H
 #define NETWORKMANAGER_H
-#include <array>
 #include <memory>
+#include <optional>
 
 #include "Connection.h"
-#include "../common/ConnectionType.h"
+#include "NetworkClient.h"
+#include "NetworkServer.h"
 
 class NetworkManager {
 public:
-  explicit NetworkManager(ConnectionType type) {};
+  explicit NetworkManager(const std::function<Data()>& stateFetchFunc) : stateFetchFunc_(stateFetchFunc) {}
 
   int isConnectionAvailable();
 
   std::size_t getConnectionCount();
 
-  void attach(std::shared_ptr<Connection> &connection);
+  void attach(const std::shared_ptr<Connection> &connection);
 
-  void start();
+  void getNewConnection(Uint16 port);
+
+  void connect(const char *address, Uint16 port);
 
 private:
   std::array<std::shared_ptr<Connection>, MAX_PLAYERS> connections_{};
+  std::function<Data()> stateFetchFunc_;
+  std::optional<NetworkClient> client_;
+  std::optional<NetworkServer> server_;
 };
 
 

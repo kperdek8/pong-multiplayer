@@ -4,13 +4,14 @@
 
 
 #include <iostream>
+#include <cassert>
 #include "Game.h"
 #include "../controller/GameController.h"
 
 void Game::initLocal() {
-  gameController_.emplace(ConnectionType::LOCAL);
+  gameController_.emplace();
   // Attach the two local connections
-  std::optional<std::weak_ptr<Connection>> optConnection1 = gameController_->attachLocally();
+  std::optional<std::weak_ptr<Connection> > optConnection1 = gameController_->attachLocally();
   assert(optConnection1 && "Attaching connection1 during Local game initialization should not fail!");
 
   std::optional<std::weak_ptr<Connection> > optConnection2 = gameController_->attachLocally();
@@ -23,25 +24,42 @@ void Game::initLocal() {
   std::shared_ptr<Connection> connection2 = optConnection2->lock();
   assert(connection1 && "Locking connection2 during Local game initialization should not fail!");
 
+  // Initialize required modules
   renderer_.emplace();
   inputHandler_.emplace(InputHandler{ConnectionType::LOCAL});
   inputHandler_->attachToRenderer(&(*renderer_));
   inputHandler_->attachConnection(connection1, 0);
   inputHandler_->attachConnection(connection2, 1);
 
+  // Start threads
   running_.store(true);
-  threads_.emplace_back(&Game::gameLogic, this, std::ref(*gameController_));
-  threads_.emplace_back(&Game::debug, this, std::ref(*renderer_));
+  threads_.emplace_back(&Game::gameLogic, this);
+  threads_.emplace_back(&Game::debug, this);
   mainLoop();
 }
 
 void Game::initHost() {
   // Attach first connection
-  std::optional<std::weak_ptr<Connection>> optConnection1 = gameController_->attachLocally();
-  assert(optConnection1 && "Attaching connection1 during Local game initialization should not fail!");
+  gameController_.emplace();
+  networkManager_ = gameController_->getNetworkManager();
+  std::optional<std::weak_ptr<Connection> > optConnection1 = gameController_->attachLocally();
+  assert(optConnection1 && "Attaching host connection during initialization should not fail!");
   // Lock connection
   std::shared_ptr<Connection> connection1 = optConnection1->lock();
-  assert(connection1 && "Locking connection1 during Local game initialization should not fail!");
+  assert(connection1 && "Locking host connection during initialization should not fail!");
+
+  // Initialize required modules
+  renderer_.emplace();
+  inputHandler_.emplace(InputHandler{ConnectionType::HOST});
+  inputHandler_->attachToRenderer(&(*renderer_));
+  inputHandler_->attachConnection(connection1, 0);
+
+  // Start threads
+  running_.store(true);
+  threads_.emplace_back(&Game::gameLogic, this);
+  threads_.emplace_back(&Game::debug, this);
+  threads_.emplace_back(&Game::networking, this);
+  mainLoop();
 }
 
 void Game::initClient() {
@@ -52,8 +70,8 @@ void Game::initServer() {
   // Implement
 }
 
-Game::Game(const ConnectionType& connectionType) {
-  switch(connectionType) {
+Game::Game(const ConnectionType &connectionType) : type_(connectionType) {
+  switch (connectionType) {
     case ConnectionType::LOCAL:
       initLocal();
       break;
@@ -71,24 +89,32 @@ Game::Game(const ConnectionType& connectionType) {
 
 Game::~Game() {
   stop();
-  for(auto& thread : threads_) {
-    if(thread.joinable())
+  for (auto &thread: threads_) {
+    if (thread.joinable())
       thread.join();
   }
 }
 
-void Game::gameLogic(GameController &gameController) const {
-  gameController.start();
+void Game::gameLogic() {
   while (running_.load() == true) {
-    gameController.update();
+    gameController_->update();
   }
 }
 
+void Game::networking() {
+  assert(networkManager_ != nullptr && "Networking thread should get created without initialized NetworkManager");
+  if(!networkManager_)
+      return;
+  while(running_.load() == true) {
+    if(networkManager_->isConnectionAvailable())
+      networkManager_->getNewConnection(4444);
+  }
+}
 
-void Game::debug(Renderer &renderer) const {
+void Game::debug() const {
   int lastFps = -1;
   while (running_.load() == true) {
-    int fps = renderer.GetFPS();
+    int fps = renderer_->GetFPS();
     if (fps != lastFps) {
       std::cout << "FPS: " << fps << std::endl;
       lastFps = fps;
@@ -98,10 +124,10 @@ void Game::debug(Renderer &renderer) const {
 
 
 void Game::mainLoop() {
-  GameState &gameState = gameController_->getGameState();
+  const GameState &gameState = gameController_->getGameState();
 
   while (running_.load()) {
-    renderer_->Update(gameState.getObjects());
+    renderer_->Update(gameState);
     inputHandler_->handleInput();
     if (inputHandler_->isActionTriggered(Action::QUIT)) {
       running_.store(false);
@@ -110,7 +136,7 @@ void Game::mainLoop() {
   stop();
 }
 
-bool Game::isRunning() const{
+bool Game::isRunning() const {
   return running_.load();
 }
 

@@ -81,6 +81,10 @@ GameState &GameController::getGameState() {
   return gameState_;
 }
 
+NetworkManager* GameController::getNetworkManager() {
+  return &networkManager_;
+}
+
 void GameController::handleBoundsCollision(GameObject &object,
                                            Vector2D &movement) {
   if (const auto direction = object.boundsCollision(movement)) {

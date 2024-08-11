@@ -10,7 +10,6 @@
 #include <optional>
 
 #include "../common/Action.h"
-#include "../common/ConnectionType.h"
 #include "../networking/Connection.h"
 #include "../networking/NetworkManager.h"
 #include "GameField.h"
@@ -19,12 +18,19 @@
 
 class GameController {
 public:
-  explicit GameController(const ConnectionType& type)
-    : gameState_{Player{0}, Player{1}, Ball{GameField::width / 2.0f, GameField::height / 2.0f}} {}
+  // TODO: Replace passed stateFetchFunc as new function which will encode GameState as Data object
+  explicit GameController()
+    : gameState_{Player{0}, Player{1}, Ball{GameField::width / 2.0f, GameField::height / 2.0f}},
+  networkManager_{[this]() { return Data(std::string{"01010101"});}} {}
 
   std::optional<std::weak_ptr<Connection> > attachLocally();
 
   GameState &getGameState();
+
+  /* For multiplayer game it's necessary to access NetworkManager from outside, because neither GameController nor
+   * NetworkManager have knowledge about type of game.
+   */
+  NetworkManager* getNetworkManager();
 
   void update();
 

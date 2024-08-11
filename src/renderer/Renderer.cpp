@@ -35,7 +35,7 @@ Renderer::Renderer() {
   UpdateViewport();
 }
 
-void Renderer::Update(const std::vector<const GameObject *> &objects) {
+void Renderer::Update(const GameState &gameState) {
   SDL_Event event;
   while (SDL_PollEvent(&event)) {
     switch (event.type) {
@@ -49,7 +49,7 @@ void Renderer::Update(const std::vector<const GameObject *> &objects) {
   float scale = std::min(static_cast<float>(viewport_.w) / TARGET_WIDTH,
                          static_cast<float>(viewport_.h) / TARGET_HEIGHT);
 
-  for (auto &object: objects) {
+  for (const auto &object: gameState.getObjects()) {
     DrawObject(object, scale);
   }
 

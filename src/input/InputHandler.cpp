@@ -13,7 +13,8 @@
 InputHandler::InputHandler(const ConnectionType &connectionType) : connectionType_{connectionType},
                                                                    keyMapping1_{player1_keys},
                                                                    keyMapping2_{player2_keys},
-                                                                   keyMappingGlobal_{global_keys} {}
+                                                                   keyMappingGlobal_{global_keys} {
+}
 
 void InputHandler::handleInput() {
   SDL_Event event;
@@ -52,7 +53,7 @@ void InputHandler::attachConnection(const std::weak_ptr<Connection> &connection,
   assert((id == 0 || id == 1) && "Connection attached to InputHandler was passed with invalid id");
   if (id == 0) {
     if (connection1_) {
-      std::cout << "WARNING: Connection1 in InputHandler overwritten" << std::endl;
+      std::cerr << "WARNING: Connection1 in InputHandler overwritten" << std::endl;
     }
     connection1_ = connection;
     // Initialize key states
@@ -61,7 +62,7 @@ void InputHandler::attachConnection(const std::weak_ptr<Connection> &connection,
     }
   } else {
     if (connection2_) {
-      std::cout << "WARNING: Connection2 in InputHandler overwritten" << std::endl;
+      std::cerr << "WARNING: Connection2 in InputHandler overwritten" << std::endl;
     }
     connection2_ = connection;
     // Initialize key states
@@ -111,8 +112,7 @@ void InputHandler::handleKeyEvent(const SDL_KeyboardEvent &event) {
       const std::shared_ptr<Connection> conn = connection1_->lock();
       conn->send(Data(action, isPressed));
       actionStates_[action] = isPressed;
-    }
-    else if (connection2_) {
+    } else if (connection2_) {
       const std::shared_ptr<Connection> conn = connection2_->lock();
       conn->send(Data(action, isPressed));
       actionStates_[action] = isPressed;

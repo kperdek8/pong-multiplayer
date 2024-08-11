@@ -7,19 +7,20 @@
 
 #include <SDL3/SDL_render.h>
 #include <SDL3/SDL_video.h>
-#include <vector>
 
+struct GameState;
 class GameObject;
 
 class Renderer {
 public:
   Renderer();
 
-  void Update(const std::vector<const GameObject *> &objects);
+  //TODO: Update should be done via callback function which returns gameState (either original in Controller or reconstruction by NetworkClient).
+  void Update(const GameState &gameState);
 
   void UpdateViewport();
 
-  int GetFPS() const;
+  [[nodiscard]] int GetFPS() const;
 
 private:
   void DrawObject(const GameObject *object, float scale) const;

@@ -12,26 +12,32 @@
 
 // TODO: Add a way to specify callback function for received data
 
+constexpr uint8_t TICKRATE = 120;
+
 class NetworkServer {
 public:
-  explicit NetworkServer(Uint16 port);
+  explicit NetworkServer(Uint16 port, const std::function<Data()>& fetchFunction);
 
   ~NetworkServer();
 
-  void listen(std::vector<std::shared_ptr<Connection> > &connections);
+  std::shared_ptr<Connection> acceptNew();
 
 private:
-  void handleAccept(SDLNet_StreamSocket *client, std::vector<std::shared_ptr<Connection> > &connections);
+  void handleConnection(SDLNet_StreamSocket *client);
+
+  std::function<Data()> fetchData_;
 
   static void sendData(SDLNet_StreamSocket *client, const Data &data);
 
   static void recvData(SDLNet_StreamSocket *client);
 
-  Uint16 port_;
-  SDLNet_Server *server_;
   std::vector<SDLNet_StreamSocket *> sockets_;
   std::vector<std::thread> threads_;
+  SDLNet_Server *server_;
+  Uint16 port_;
+  uint8_t tickrate_{TICKRATE};
   std::atomic<bool> running_{true};
+  bool acceptingNew_{true};
 };
 
 

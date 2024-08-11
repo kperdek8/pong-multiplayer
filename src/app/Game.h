@@ -29,17 +29,21 @@ private:
 
   void initServer();
 
-  void debug(Renderer &renderer) const;
+  void debug() const;
 
-  void gameLogic(GameController &gameController) const;
+  void gameLogic();
+
+  void networking();
 
   void mainLoop();
 
   void stop();
 
-  std::optional<Renderer> renderer_{};           // Optional to delay initialization
-  std::optional<GameController> gameController_; // Optional to delay initialization
-  std::optional<InputHandler> inputHandler_;     // Optional to delay initialization
+  ConnectionType type_;
+  std::optional<Renderer> renderer_{};           // Optional to allow delayed initialization
+  std::optional<GameController> gameController_; // Optional to allow delayed initialization
+  std::optional<InputHandler> inputHandler_;     // Optional to allow delayed initialization
+  NetworkManager* networkManager_ = nullptr;               // Not always exposed to Game
   std::vector<std::thread> threads_;
   std::atomic<bool> running_ = false;
 };

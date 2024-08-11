@@ -6,7 +6,8 @@
 
 #include <iostream>
 
-NetworkServer::NetworkServer(Uint16 port) : port_(port) {
+NetworkServer::NetworkServer(Uint16 port, const std::function<Data()>& fetchFunction) : port_(port), fetchData_
+(fetchFunction) {
   if (SDLNet_Init() < 0) {
     std::cerr << "SDLNet_Init error: " << SDL_GetError() << std::endl;
     exit(EXIT_FAILURE);
@@ -34,29 +35,32 @@ NetworkServer::~NetworkServer() {
   SDLNet_Quit();
 }
 
-void NetworkServer::listen(std::vector<std::shared_ptr<Connection> > &connections) {
-  while (running_) {
+std::shared_ptr<Connection> NetworkServer::acceptNew() {
+  while (true) {
+    std::cout<<"Waiting for new connection"<<std::endl;
     SDLNet_StreamSocket *client;
     SDLNet_AcceptClient(server_, &client);
     if (client) {
-      std::thread client_thread(&NetworkServer::handleAccept, this, client, std::ref(connections));
+      std::shared_ptr<Connection> connection = Connection::create([this, &client](const Data &data) {
+                                    sendData(client, data);
+                                  },
+                                  [this, &client]() {
+                                    recvData(client);
+                                  });
+      std::thread client_thread(&NetworkServer::handleConnection, this, client);
       threads_.push_back(std::move(client_thread));
+      return connection;
     }
     SDL_Delay(100); // Small delay to avoid busy waiting
   }
 }
 
-void NetworkServer::handleAccept(SDLNet_StreamSocket *client, std::vector<std::shared_ptr<Connection> > &connections) {
-  connections.emplace_back(Connection::create(
-                                              [this, &client](const Data &data) {
-                                                sendData(client, data);
-                                              },
-                                              [this, &client]() {
-                                                recvData(client);
-                                              }));
+void NetworkServer::handleConnection(SDLNet_StreamSocket *client) {
   sockets_.push_back(client);
   while (running_) {
+    SDL_Delay(1000); // For testing, cap by tickrate later
     recvData(client);
+    sendData(client, fetchData_());
   }
 }
 
