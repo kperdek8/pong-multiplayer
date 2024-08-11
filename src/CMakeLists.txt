@@ -1,6 +1,6 @@
 add_subdirectory(app)
 add_subdirectory(common)
-add_subdirectory(game)
+add_subdirectory(controller)
 add_subdirectory(renderer)
 add_subdirectory(input)
 add_subdirectory(networking)

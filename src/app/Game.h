@@ -10,7 +10,7 @@
 #include "../common/ConnectionType.h"
 #include "../input/InputHandler.h"
 #include "../renderer/Renderer.h"
-#include "GameController.h"
+#include "../controller/GameController.h"
 
 class Game {
 public:

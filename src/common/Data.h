@@ -7,7 +7,7 @@
 
 #include <bitset>
 #include "Action.h"
-#include "../game/GameState.h"
+#include "../controller/GameState.h"
 #include "Action.h"
 
 class Data {

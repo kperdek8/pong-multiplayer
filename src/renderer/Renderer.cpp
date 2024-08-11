@@ -7,7 +7,8 @@
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_render.h>
 #include <iostream>
-#include "../game/GameObjects.h"
+#include "../controller/GameObjects.h"
+#include "../controller/GameState.h"
 
 static constexpr std::string TITLE = "Pong";
 static constexpr uint16_t WIDTH = 1080;

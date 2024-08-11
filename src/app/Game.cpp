@@ -5,8 +5,7 @@
 
 #include <iostream>
 #include "Game.h"
-#include <cassert>
-#include "GameController.h"
+#include "../controller/GameController.h"
 
 void Game::initLocal() {
   gameController_.emplace(ConnectionType::LOCAL);
