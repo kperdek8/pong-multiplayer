@@ -176,3 +176,7 @@ void GameController::start() {
   gameStarted_ = true;
   lastFrame_ = std::chrono::high_resolution_clock::now();
 }
+
+void GameController::stop() {
+  networkManager_.stop();
+}

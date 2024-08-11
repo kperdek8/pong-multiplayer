@@ -22,6 +22,8 @@ public:
 
   std::shared_ptr<Connection> acceptNew();
 
+  void stop();
+
 private:
   void handleConnection(SDLNet_StreamSocket *client);
 

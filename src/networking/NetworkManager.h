@@ -25,6 +25,8 @@ public:
 
   void connect(const char *address, Uint16 port);
 
+  void stop();
+
 private:
   std::array<std::shared_ptr<Connection>, MAX_PLAYERS> connections_{};
   std::function<Data()> stateFetchFunc_;

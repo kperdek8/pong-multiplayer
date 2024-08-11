@@ -23,20 +23,11 @@ NetworkServer::NetworkServer(Uint16 port, const std::function<Data()>& fetchFunc
 }
 
 NetworkServer::~NetworkServer() {
-  for (auto &thread: threads_) {
-    if (thread.joinable()) {
-      thread.join();
-    }
-  }
-  for (const auto socket: sockets_) {
-    SDLNet_DestroyStreamSocket(socket);
-  }
-  SDLNet_DestroyServer(server_);
-  SDLNet_Quit();
+  stop();
 }
 
 std::shared_ptr<Connection> NetworkServer::acceptNew() {
-  while (true) {
+  while (running_.load()) {
     std::cout<<"Waiting for new connection"<<std::endl;
     SDLNet_StreamSocket *client;
     SDLNet_AcceptClient(server_, &client);
@@ -51,13 +42,14 @@ std::shared_ptr<Connection> NetworkServer::acceptNew() {
       threads_.push_back(std::move(client_thread));
       return connection;
     }
-    SDL_Delay(100); // Small delay to avoid busy waiting
+    SDL_Delay(1000); // Small delay to avoid busy waiting
   }
+  return nullptr;
 }
 
 void NetworkServer::handleConnection(SDLNet_StreamSocket *client) {
   sockets_.push_back(client);
-  while (running_) {
+  while (running_.load()) {
     SDL_Delay(1000); // For testing, cap by tickrate later
     recvData(client);
     sendData(client, fetchData_());
@@ -86,5 +78,20 @@ void NetworkServer::recvData(SDLNet_StreamSocket *client) {
     buffer[len] = '\0';
     std::cout << "Received: " << buffer << std::endl;
   }
+}
+
+void NetworkServer::stop() {
+  running_.store(false);
+  for (auto &thread: threads_) {
+    if (thread.joinable()) {
+      thread.join();
+    }
+  }
+  for (const auto socket: sockets_) {
+    SDLNet_DestroyStreamSocket(socket);
+  }
+  // For some weird reason trying to correctly destroy server causes SegFault
+  //SDLNet_DestroyServer(server_);
+  SDLNet_Quit();
 }
 

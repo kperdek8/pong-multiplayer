@@ -23,6 +23,10 @@ public:
     : gameState_{Player{0}, Player{1}, Ball{GameField::width / 2.0f, GameField::height / 2.0f}},
   networkManager_{[this]() { return Data(std::string{"01010101"});}} {}
 
+  ~GameController() {
+    networkManager_.stop();
+  }
+
   std::optional<std::weak_ptr<Connection> > attachLocally();
 
   GameState &getGameState();
@@ -33,7 +37,7 @@ public:
   NetworkManager* getNetworkManager();
 
   void update();
-
+  void stop();
   void start();
 
 private:

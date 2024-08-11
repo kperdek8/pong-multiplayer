@@ -22,8 +22,8 @@ void NetworkManager::getNewConnection(Uint16 port) {
   if (!server_) {
     server_.emplace(port, stateFetchFunc_);
   }
-  assert(getConnectionCount() <= 2 || "Do not ask for new connection when all slots are filled");
-  if(getConnectionCount() <= 2) {
+  assert(getConnectionCount() < 2 || "Do not ask for new connection when all slots are filled");
+  if(getConnectionCount() < 2) {
     attach(server_->acceptNew());
   }
   else {
@@ -44,4 +44,10 @@ int NetworkManager::isConnectionAvailable() {
   return it != connections_.end()
            ? static_cast<int>(std::distance(connections_.begin(), it))
            : -1;
+}
+
+void NetworkManager::stop() {
+  if(server_) {
+    server_->stop();
+  }
 }

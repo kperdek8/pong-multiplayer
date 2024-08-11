@@ -89,31 +89,28 @@ Game::Game(const ConnectionType &connectionType) : type_(connectionType) {
 
 Game::~Game() {
   stop();
-  for (auto &thread: threads_) {
-    if (thread.joinable())
-      thread.join();
-  }
 }
 
 void Game::gameLogic() {
-  while (running_.load() == true) {
+  while (running_.load()) {
     gameController_->update();
   }
+  gameController_->stop();
 }
 
 void Game::networking() {
   assert(networkManager_ != nullptr && "Networking thread should get created without initialized NetworkManager");
   if(!networkManager_)
       return;
-  while(running_.load() == true) {
-    if(networkManager_->isConnectionAvailable())
-      networkManager_->getNewConnection(4444);
+  while(running_.load()) {
+    if(networkManager_->isConnectionAvailable() >= 0)
+      networkManager_->getNewConnection(4445);
   }
 }
 
 void Game::debug() const {
   int lastFps = -1;
-  while (running_.load() == true) {
+  while (running_.load()) {
     int fps = renderer_->GetFPS();
     if (fps != lastFps) {
       std::cout << "FPS: " << fps << std::endl;
@@ -133,7 +130,6 @@ void Game::mainLoop() {
       running_.store(false);
     }
   }
-  stop();
 }
 
 bool Game::isRunning() const {
@@ -142,4 +138,8 @@ bool Game::isRunning() const {
 
 void Game::stop() {
   running_.store(false);
+  for (auto &thread: threads_) {
+    if (thread.joinable())
+      thread.join();
+  }
 }
